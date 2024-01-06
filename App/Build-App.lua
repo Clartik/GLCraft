@@ -10,6 +10,7 @@ project "App"
    includedirs
    {
       "Source",
+      "../Vendor/glm",
 
 	  -- Include Core
 	  "../Engine/Source"

@@ -9,7 +9,13 @@ project "Engine"
 
    includedirs
    {
-      "Source"
+      "Source",
+   }
+
+   links
+   {
+      "Glad",
+      "Vendor/GLFW/lib-vc2022/glfw3.lib"
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")

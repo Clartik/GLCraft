@@ -1,7 +1,5 @@
 #pragma once
 
-namespace Engine {
-
-	void PrintHelloWorld();
-
+namespace Engine 
+{
 }
