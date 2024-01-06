@@ -1,6 +1,6 @@
-#include "Core/Core.h"
+#include "Engine/Core.h"
 
 int main()
 {
-	Core::PrintHelloWorld();
+	Engine::PrintHelloWorld();
 }

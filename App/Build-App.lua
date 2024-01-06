@@ -12,12 +12,12 @@ project "App"
       "Source",
 
 	  -- Include Core
-	  "../Core/Source"
+	  "../Engine/Source"
    }
 
    links
    {
-      "Core"
+      "Engine"
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")

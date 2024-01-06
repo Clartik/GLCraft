@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace Core {
+namespace Engine {
 
 	void PrintHelloWorld()
 	{
