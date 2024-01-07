@@ -1,32 +1,44 @@
 project "Engine"
    kind "StaticLib"
    language "C++"
-   cppdialect "C++20"
-   targetdir "Binaries/%{cfg.buildcfg}"
+   cppdialect "C++17"
+   targetdir "bin/%{cfg.buildcfg}"
    staticruntime "off"
 
-   files { "Source/**.h", "Source/**.cpp" }
+   files { "src/**.h", "src/**.cpp" }
+
+   pchheader "pch.h"
+   pchsource "src/pch.cpp"
+
+   defines 
+   {
+      "_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS"
+   }
 
    includedirs
    {
-      "Source",
+      "src",
+      "../vendor/glm",
+      "vendor/GLFW/include",
+      "vendor/GLAD/include",
+      "vendor/spdlog/include"
    }
 
    links
    {
-      "Glad",
-      "Vendor/GLFW/lib-vc2022/glfw3.lib"
+      "GLAD",
+      "vendor/GLFW/lib-vc2022/glfw3.lib"
    }
 
-   targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
-   objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
+   targetdir ("../bin/" .. OutputDir .. "/%{prj.name}")
+   objdir ("../bin/int/" .. OutputDir .. "/%{prj.name}")
 
    filter "system:windows"
        systemversion "latest"
        defines { }
 
    filter "configurations:Debug"
-       defines { "DEBUG" }
+       defines { "DEBUG", "ENABLE_ASSERTS" }
        runtime "Debug"
        symbols "On"
 

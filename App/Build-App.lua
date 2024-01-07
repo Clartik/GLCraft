@@ -1,19 +1,25 @@
 project "App"
    kind "ConsoleApp"
    language "C++"
-   cppdialect "C++20"
-   targetdir "Binaries/%{cfg.buildcfg}"
+   cppdialect "C++17"
+   targetdir "bin/%{cfg.buildcfg}"
    staticruntime "off"
 
-   files { "Source/**.h", "Source/**.cpp" }
+   files { "src/**.h", "src/**.cpp" }
+
+   defines 
+   {
+      "_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS"
+   }
 
    includedirs
    {
-      "Source",
-      "../Vendor/glm",
+      "src",
+      "../vendor/glm",
+      "../Engine/vendor/spdlog/include",
 
 	  -- Include Core
-	  "../Engine/Source"
+	  "../Engine/src"
    }
 
    links
@@ -21,8 +27,8 @@ project "App"
       "Engine"
    }
 
-   targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
-   objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
+   targetdir ("../bin/" .. OutputDir .. "/%{prj.name}")
+   objdir ("../bin/int/" .. OutputDir .. "/%{prj.name}")
 
    filter "system:windows"
        systemversion "latest"

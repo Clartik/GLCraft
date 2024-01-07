@@ -1,4 +1,4 @@
-project "Glad"
+project "GLAD"
    kind "StaticLib"
    language "C"
    staticruntime "off"
@@ -10,8 +10,8 @@ project "Glad"
       "include"
    }
 
-   targetdir ("Binaries/" .. OutputDir .. "/%{prj.name}")
-   objdir ("Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
+   targetdir ("bin/" .. OutputDir .. "/%{prj.name}")
+   objdir ("bin/int/" .. OutputDir .. "/%{prj.name}")
 
    filter "system:windows"
         systemversion "latest"
