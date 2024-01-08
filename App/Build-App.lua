@@ -17,6 +17,7 @@ project "App"
       "src",
       "../vendor/glm",
       "../Engine/vendor/spdlog/include",
+      "../Engine/vendor/GLAD/include",
 
 	  -- Include Core
 	  "../Engine/src"
@@ -24,7 +25,8 @@ project "App"
 
    links
    {
-      "Engine"
+      "Engine",
+      "GLAD"
    }
 
    targetdir ("../bin/" .. OutputDir .. "/%{prj.name}")
