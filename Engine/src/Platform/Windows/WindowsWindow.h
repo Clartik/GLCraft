@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Core/Window.h"
+#include "Engine/Renderer/GraphicsContext.h"
 
 struct GLFWwindow;
 
@@ -27,12 +28,13 @@ namespace Engine
 		void Shutdown();
 	private:
 		GLFWwindow* m_Window = nullptr;
+		GraphicsContext* m_Context;
 
 		struct WindowData
 		{
 			std::string Title;
-			unsigned int Width, Height;
-			bool VSync;
+			unsigned int Width = 0, Height = 0;
+			bool VSync = false;
 
 			EventCallbackFn EventCallback;
 		};

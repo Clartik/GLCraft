@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "WindowsWindow.h"
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "Engine/Events/ApplicationEvent.h"
 #include "Engine/Events/KeyEvent.h"
 #include "Engine/Events/MouseEvent.h"
+
+#include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Engine
 {
@@ -45,10 +46,8 @@ namespace Engine
 		m_Window = glfwCreateWindow(props.Width, props.Height, props.Title.c_str(), NULL, NULL);
 		CORE_ASSERT(m_Window, "Failed to Initalize Window!");
 
-		glfwMakeContextCurrent(m_Window);
-
-		int gladStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		CORE_ASSERT(gladStatus, "Failed to Initalize GLAD!");
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
@@ -77,24 +76,24 @@ namespace Engine
 
 			switch (action)
 			{
-			case GLFW_PRESS:
-			{
-				KeyPressedEvent event(key, 0);
-				data.EventCallback(event);
-				break;
-			}
-			case GLFW_RELEASE:
-			{
-				KeyReleasedEvent event(key);
-				data.EventCallback(event);
-				break;
-			}
-			case GLFW_REPEAT:
-			{
-				KeyPressedEvent event(key, 1);
-				data.EventCallback(event);
-				break;
-			}
+				case GLFW_PRESS:
+				{
+					KeyPressedEvent event(key, 0);
+					data.EventCallback(event);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					KeyReleasedEvent event(key);
+					data.EventCallback(event);
+					break;
+				}
+				case GLFW_REPEAT:
+				{
+					KeyPressedEvent event(key, 1);
+					data.EventCallback(event);
+					break;
+				}
 			}
 		});
 
@@ -112,18 +111,18 @@ namespace Engine
 
 			switch (action)
 			{
-			case GLFW_PRESS:
-			{
-				MouseButtonPressedEvent event(button);
-				data.EventCallback(event);
-				break;
-			}
-			case GLFW_RELEASE:
-			{
-				MouseButtonReleasedEvent event(button);
-				data.EventCallback(event);
-				break;
-			}
+				case GLFW_PRESS:
+				{
+					MouseButtonPressedEvent event(button);
+					data.EventCallback(event);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					MouseButtonReleasedEvent event(button);
+					data.EventCallback(event);
+					break;
+				}
 			}
 		});
 
@@ -152,7 +151,7 @@ namespace Engine
 
 	void WindowsWindow::OnUpdate()
 	{
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 		glfwPollEvents();
 	}
 
