@@ -14,14 +14,14 @@ namespace Engine
 
 		void OnUpdate() override;
 
-		unsigned int GetWidth() const override { return m_Data.Width; }
-		unsigned int GetHeight() const override { return m_Data.Height; }
+		inline unsigned int GetWidth() const override { return m_Data.Width; }
+		inline unsigned int GetHeight() const override { return m_Data.Height; }
 
-		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
-		bool IsVSync() const override { return m_Data.VSync; }
+		inline bool IsVSync() const override { return m_Data.VSync; }
 
-		void* GetNativeWindow() const { return m_Window; }
+		inline void* GetNativeWindow() const { return m_Window; }
 	private:
 		void Init(const WindowProps& props);
 		void Shutdown();
