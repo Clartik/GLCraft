@@ -13,7 +13,6 @@ public:
 	void OnUpdate();
 	void OnEvent(Engine::Event& e);
 private:
-	Engine::VertexArray* m_VAO;
-
+	std::shared_ptr<Engine::VertexArray> m_VAO;
 	std::shared_ptr<Engine::Shader> m_Shader;
 };

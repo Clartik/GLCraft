@@ -10,12 +10,12 @@ namespace Engine
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:
+			case RendererAPI::API::None:
 			{
 				CORE_ASSERT(false, "RendererAPI::None is not supported!");
 				return nullptr;
 			}
-			case RendererAPI::OpenGL:
+			case RendererAPI::API::OpenGL:
 				return std::make_shared<OpenGLShader>(name, vertexPath, fragmentPath);
 			default:
 				break;

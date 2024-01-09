@@ -1,6 +1,6 @@
 #include "MainLayer.h"
 
-#include <glad/glad.h>
+#include "Engine/Renderer/Renderer.h"
 
 MainLayer::MainLayer()
 	: Layer("Main Layer")
@@ -36,7 +36,6 @@ MainLayer::MainLayer()
 
 MainLayer::~MainLayer()
 {
-	delete m_VAO;
 }
 
 void MainLayer::OnAttach()
@@ -49,12 +48,15 @@ void MainLayer::OnDetach()
 
 void MainLayer::OnUpdate()
 {
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	Engine::RenderCommand::SetClearColor({ 0.2f, 0.2f, 0.2f, 1.0f });
+	Engine::RenderCommand::Clear();
+
+	Engine::Renderer::BeginScene();
 
 	m_Shader->Bind();
-	m_VAO->Bind();
-	unsigned int count = m_VAO->GetIndexBuffer()->GetCount();
-	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+	Engine::Renderer::Submit(m_VAO);
+
+	Engine::Renderer::EndScene();
 }
 
 void MainLayer::OnEvent(Engine::Event& e)

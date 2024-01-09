@@ -2,7 +2,6 @@
 #include "Buffer.h"
 
 #include "Renderer.h"
-
 #include "Platform/OpenGL/OpenGLBuffer.h"
 
 namespace Engine
@@ -11,12 +10,12 @@ namespace Engine
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:
+			case RendererAPI::API::None:
 			{
 				CORE_ASSERT(false, "RendererAPI::None is not supported!");
 				return nullptr;
 			}
-			case RendererAPI::OpenGL:
+			case RendererAPI::API::OpenGL:
 				return std::make_shared<OpenGLVertexBuffer>(vertices, size);
 			default:
 				break;
@@ -30,12 +29,12 @@ namespace Engine
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:
+			case RendererAPI::API::None:
 			{
 				CORE_ASSERT(false, "RendererAPI::None is not supported!");
 				return nullptr;
 			}
-			case RendererAPI::OpenGL:
+			case RendererAPI::API::OpenGL:
 				return std::make_shared<OpenGLIndexBuffer>(indices, count);
 			default:
 				break;

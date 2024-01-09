@@ -75,7 +75,7 @@ namespace Engine
 
 		glCompileShader(shader);
 
-		return shader;
+		return shader;	
 	}
 
 	bool OpenGLShader::IsCompiled(unsigned int shader, const std::string& errorMsg)
@@ -99,23 +99,24 @@ namespace Engine
 			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	bool OpenGLShader::IsLinked()
 	{
 		GLint linked = 0;
-		glGetShaderiv(m_RendererID, GL_COMPILE_STATUS, &linked);
+		glGetProgramiv(m_RendererID, GL_LINK_STATUS, &linked);
 
 		if (linked == GL_FALSE)
 		{
 			GLint maxLength = 0;
-			glGetShaderiv(m_RendererID, GL_INFO_LOG_LENGTH, &maxLength);
+			glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &maxLength);
 
+			// The maxLength includes the NULL character
 			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(m_RendererID, maxLength, &maxLength, &infoLog[0]);
+			glGetProgramInfoLog(m_RendererID, maxLength, &maxLength, &infoLog[0]);
 
-			glDeleteShader(m_RendererID);
+			glDeleteProgram(m_RendererID);
 
 			CORE_LOG_ERROR("{0}", infoLog.data());
 			CORE_ASSERT(false, "Shader Linking Failure!");
@@ -123,7 +124,7 @@ namespace Engine
 			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	int OpenGLShader::GetUniformLocation(const std::string& name)
