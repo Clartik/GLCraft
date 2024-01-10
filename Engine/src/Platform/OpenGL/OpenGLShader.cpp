@@ -2,6 +2,7 @@
 #include "OpenGLShader.h"
 
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <fstream>
 
@@ -12,16 +13,28 @@ namespace Engine
 	{
 		std::string vertexSrc = ParseShader(vertexPath);
 		unsigned int vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSrc);
-		if (!IsCompiled(vertexShader, "Vertex Shader Compilation Failed!")) return;
+
+		if (!IsCompiled(vertexShader, "Vertex Shader Compilation Failed!"))
+		{
+			glDeleteShader(vertexShader);
+			return;
+		}
 
 		std::string fragmentSrc = ParseShader(fragmentPath);
 		unsigned int fragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragmentSrc);
-		if (!IsCompiled(fragmentShader, "Fragment Shader Compilation Failed!")) return;
+
+		if (!IsCompiled(fragmentShader, "Fragment Shader Compilation Failed!"))
+		{
+			glDeleteShader(fragmentShader);
+			return;
+		}
 
 		m_RendererID = CreateProgram(vertexShader, fragmentShader);
 
 		if (!IsLinked())
 		{
+			glDeleteProgram(m_RendererID);
+
 			// Don't leak shaders either.
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
@@ -51,7 +64,7 @@ namespace Engine
 
 	void OpenGLShader::SetUniformMat4(const std::string& name, const glm::mat4& value)
 	{
-		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &value[0][0]);
+		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 	std::string OpenGLShader::ParseShader(const std::string& filepath)
@@ -91,8 +104,6 @@ namespace Engine
 			std::vector<GLchar> infoLog(maxLength);
 			glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
-			glDeleteShader(shader);
-
 			CORE_LOG_ERROR("{0}", infoLog.data());
 			CORE_ASSERT(false, errorMsg);
 
@@ -115,8 +126,6 @@ namespace Engine
 			// The maxLength includes the NULL character
 			std::vector<GLchar> infoLog(maxLength);
 			glGetProgramInfoLog(m_RendererID, maxLength, &maxLength, &infoLog[0]);
-
-			glDeleteProgram(m_RendererID);
 
 			CORE_LOG_ERROR("{0}", infoLog.data());
 			CORE_ASSERT(false, "Shader Linking Failure!");

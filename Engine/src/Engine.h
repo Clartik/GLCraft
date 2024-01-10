@@ -20,3 +20,6 @@
 #include "Engine/Renderer/Shader.h"
 #include "Engine/Renderer/VertexArray.h"
 #include "Engine/Renderer/Buffer.h"
+
+#include "Engine/Scene/PerspectiveCamera.h"
+#include "Engine/Scene/OrthographicCamera.h"

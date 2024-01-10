@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Application.h"
 
-#include <glad/glad.h>
+#include "Time.h"
+#include "DeltaTime.h"
 
 namespace Engine
 {
@@ -26,8 +27,12 @@ namespace Engine
 	{
 		while (m_Running)
 		{
+			float currentTime = Time::GetTime();
+			DeltaTime deltaTime = currentTime - m_LastFrameTime;
+			m_LastFrameTime = currentTime;
+
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(deltaTime);
 
 			m_Window->OnUpdate();
 		}

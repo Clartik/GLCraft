@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "Engine/Events/Event.h"
+#include "DeltaTime.h"
 
 namespace Engine
 {
@@ -14,7 +15,7 @@ namespace Engine
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(DeltaTime deltaTime) {}
 		virtual void OnEvent(Event& e) {}
 
 		inline const std::string& GetName() const { return m_DebugName; }
