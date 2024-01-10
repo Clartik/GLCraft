@@ -3,11 +3,12 @@
 
 namespace Engine
 {
-	OrthographicCamera::OrthographicCamera(const ProjectionDetails& projectionDetails, const glm::vec3& position)
+	OrthographicCamera::OrthographicCamera(float left, float right, float top, float bottom, 
+		const glm::vec3& position, float nearPlane, float farPlane)
+		: m_Position(position)
 	{
-		SetPosition(position);
-		SetProjection(projectionDetails);
-		m_ViewProj = m_Proj * m_View;
+		m_Proj = glm::ortho(left, right, top, bottom, nearPlane, farPlane);
+		RecalculateViewProjection();
 	}
 
 	void OrthographicCamera::SetPosition(const glm::vec3& position)
@@ -22,17 +23,17 @@ namespace Engine
 		RecalculateView();
 	}
 
-	void OrthographicCamera::SetView(const glm::vec3& pos, const glm::vec3& lookAt, const glm::vec3& up)
+	void OrthographicCamera::LookAt(const glm::vec3& lookAt)
 	{
-		m_View = glm::lookAt(pos, lookAt, up);
+		m_View = glm::lookAt(m_Position, lookAt, m_Up);
+		RecalculateViewProjection();
 	}
 
-	void OrthographicCamera::SetProjection(const ProjectionDetails& projectionDetails)
+	void OrthographicCamera::SetProjection(float left, float right, float top, float bottom,
+		float nearPlane, float farPlane)
 	{
-		m_Proj = glm::ortho(
-			projectionDetails.LeftPlane, projectionDetails.RightPlane,
-			projectionDetails.TopPlane, projectionDetails.BottomPlane,
-			projectionDetails.NearPlane, projectionDetails.FarPlane);
+		m_Proj = glm::ortho(left, right, top, bottom, nearPlane, farPlane);
+		RecalculateViewProjection();
 	}
 
 	void OrthographicCamera::RecalculateView()
@@ -42,6 +43,6 @@ namespace Engine
 
 		// Camera Movement Should Make the Model Matrix of Objects Go Opposite Way
 		m_View = glm::inverse(transform);
-		m_ViewProj = m_Proj * m_View;
+		RecalculateViewProjection();
 	}
 }

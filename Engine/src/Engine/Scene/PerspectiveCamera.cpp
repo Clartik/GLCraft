@@ -3,12 +3,14 @@
 
 namespace Engine
 {
-	PerspectiveCamera::PerspectiveCamera(const ProjectionDetails& projectionDetails,
-		const glm::vec3& pos, const glm::vec3& lookAt, const glm::vec3& up)
+	PerspectiveCamera::PerspectiveCamera(float fov, float aspectRatio, float nearPlane, float farPlane,
+		const glm::vec3& position)
+		: m_Position(position)
 	{
-		SetProjection(projectionDetails);
-		SetView(pos, lookAt, up);
-		RecalculateView();
+		m_Proj = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
+		RecalculateViewProjection();
+
+		m_Right = glm::normalize(glm::cross(m_Front, m_Up));
 	}
 
 	void PerspectiveCamera::SetPosition(const glm::vec3& position)
@@ -23,15 +25,22 @@ namespace Engine
 		RecalculateView();
 	}
 
-	void PerspectiveCamera::SetView(const glm::vec3& pos, const glm::vec3& lookAt, const glm::vec3& up)
+	void PerspectiveCamera::SetFront(const glm::vec3& frontVec)
 	{
-		m_View = glm::lookAt(pos, lookAt, up);
+		m_Front = frontVec;
+		LookAt(m_Position + m_Front);
 	}
 
-	void PerspectiveCamera::SetProjection(const PerspectiveCamera::ProjectionDetails& projectionDetails)
+	void PerspectiveCamera::LookAt(const glm::vec3& lookAt)
 	{
-		m_Proj = glm::perspective(projectionDetails.FOV, projectionDetails.AspectRatio,
-			projectionDetails.NearPlane, projectionDetails.FarPlane);
+		m_View = glm::lookAt(m_Position, lookAt, m_Up);
+		RecalculateViewProjection();
+	}
+
+	void PerspectiveCamera::SetProjection(float fov, float aspectRatio, float nearPlane, float farPlane)
+	{
+		m_Proj = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
+		RecalculateViewProjection();
 	}
 
 	void PerspectiveCamera::RecalculateView()
@@ -41,6 +50,6 @@ namespace Engine
 
 		// Camera Movement Should Make the Model Matrix of Objects Go Opposite Way
 		m_View = glm::inverse(transform);
-		m_ViewProj = m_Proj * m_View;
+		RecalculateViewProjection();
 	}
 }

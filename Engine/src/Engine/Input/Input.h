@@ -16,5 +16,8 @@ namespace Engine
 		static glm::vec2 GetMousePosition();
 		static float GetMousePosX();
 		static float GetMousePosY();
+		static void LockMousePos();
+		static void UnlockMousePos();
+		static void SetMouseVisiblity(bool enabled);
 	};
 }

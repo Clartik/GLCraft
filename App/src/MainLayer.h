@@ -2,6 +2,9 @@
 
 #include <Engine.h>
 
+#include "OrthographicCameraController.h"
+#include "PerspectiveCameraController.h"
+
 class MainLayer : public Engine::Layer
 {
 public:
@@ -16,6 +19,8 @@ private:
 	std::shared_ptr<Engine::VertexArray> m_VAO;
 	std::shared_ptr<Engine::Shader> m_Shader;
 
-	std::shared_ptr<Engine::Camera> m_Camera;
+	//std::unique_ptr<OrthographicCameraController> m_CameraController;
+	std::unique_ptr<PerspectiveCameraController> m_CameraController;
+	//std::shared_ptr<Engine::PerspectiveCamera> m_Camera;
 	glm::mat4 m_Transform;
 };
