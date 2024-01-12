@@ -8,7 +8,7 @@ namespace Engine
 		: m_Position(position)
 	{
 		m_Proj = glm::ortho(left, right, top, bottom, nearPlane, farPlane);
-		RecalculateViewProjection();
+		CalculateViewProjection();
 	}
 
 	void OrthographicCamera::SetPosition(const glm::vec3& position)
@@ -26,14 +26,14 @@ namespace Engine
 	void OrthographicCamera::LookAt(const glm::vec3& lookAt)
 	{
 		m_View = glm::lookAt(m_Position, lookAt, m_Up);
-		RecalculateViewProjection();
+		CalculateViewProjection();
 	}
 
 	void OrthographicCamera::SetProjection(float left, float right, float top, float bottom,
 		float nearPlane, float farPlane)
 	{
 		m_Proj = glm::ortho(left, right, top, bottom, nearPlane, farPlane);
-		RecalculateViewProjection();
+		CalculateViewProjection();
 	}
 
 	void OrthographicCamera::RecalculateView()
@@ -43,6 +43,6 @@ namespace Engine
 
 		// Camera Movement Should Make the Model Matrix of Objects Go Opposite Way
 		m_View = glm::inverse(transform);
-		RecalculateViewProjection();
+		CalculateViewProjection();
 	}
 }

@@ -3,53 +3,39 @@
 
 namespace Engine
 {
-	PerspectiveCamera::PerspectiveCamera(float fov, float aspectRatio, float nearPlane, float farPlane,
-		const glm::vec3& position)
-		: m_Position(position)
+	PerspectiveCamera::PerspectiveCamera(float fov, float aspectRatio, float nearPlane, float farPlane, 
+		const Transform& transform)
+		: m_Data(fov, aspectRatio, nearPlane, farPlane), m_Transform(transform)
 	{
-		m_Proj = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
-		RecalculateViewProjection();
-
-		m_Right = glm::normalize(glm::cross(m_Front, m_Up));
-	}
-
-	void PerspectiveCamera::SetPosition(const glm::vec3& position)
-	{
-		m_Position = position;
-		RecalculateView();
-	}
-
-	void PerspectiveCamera::SetRotation(float rotation)
-	{
-		m_Rotation = rotation;
-		RecalculateView();
-	}
-
-	void PerspectiveCamera::SetFront(const glm::vec3& frontVec)
-	{
-		m_Front = frontVec;
-		LookAt(m_Position + m_Front);
+		m_Transform.AddMatrixUpdateCallback(std::bind(&PerspectiveCamera::CalculateViewProjection, this));
+		SetProjection();
 	}
 
 	void PerspectiveCamera::LookAt(const glm::vec3& lookAt)
 	{
-		m_View = glm::lookAt(m_Position, lookAt, m_Up);
-		RecalculateViewProjection();
+		Transform& transform = GetTransform();
+
+		m_View = glm::lookAt(transform.GetPosition(), lookAt, transform.GetUp());
+		transform.SetMatrix(m_View);
+
+		CalculateViewProjection();
 	}
 
-	void PerspectiveCamera::SetProjection(float fov, float aspectRatio, float nearPlane, float farPlane)
+	void PerspectiveCamera::SetFOV(float fov)
 	{
-		m_Proj = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
-		RecalculateViewProjection();
+		m_Data.FOV = fov;
+		SetProjection();
 	}
 
-	void PerspectiveCamera::RecalculateView()
+	void PerspectiveCamera::SetAspectRatio(float aspectRatio)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) *
-			glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+		m_Data.AspectRatio = aspectRatio;
+		SetProjection();
+	}
 
-		// Camera Movement Should Make the Model Matrix of Objects Go Opposite Way
-		m_View = glm::inverse(transform);
-		RecalculateViewProjection();
+	void PerspectiveCamera::SetProjection()
+	{
+		m_Proj = glm::perspective(m_Data.FOV, m_Data.AspectRatio, m_Data.NearPlane, m_Data.FarPlane);
+		CalculateViewProjection();
 	}
 }

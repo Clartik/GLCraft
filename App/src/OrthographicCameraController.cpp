@@ -46,7 +46,7 @@ void OrthographicCameraController::OnEvent(Engine::Event& e)
 
 bool OrthographicCameraController::OnMouseScrolled(Engine::MouseScrolledEvent& e)
 {
-	float yScroll = e.GetYOffset();
+	float yScroll = e.GetMouseYOffset();
 	m_ZoomLevel -= m_ZoomAmount * yScroll;
 
 	float horizontal = m_AspectRatio * m_ZoomLevel;

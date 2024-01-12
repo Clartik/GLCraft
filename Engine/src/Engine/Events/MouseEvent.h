@@ -35,8 +35,8 @@ namespace Engine
 		{
 		}
 
-		inline float GetXOffset() const { return m_XOffset; }
-		inline float GetYOffset() const { return m_YOffset; }
+		inline float GetMouseXOffset() const { return m_XOffset; }
+		inline float GetMouseYOffset() const { return m_YOffset; }
 
 		std::string ToString() const override
 		{

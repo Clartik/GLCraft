@@ -7,6 +7,9 @@
 
 namespace Engine
 {
+	glm::vec2 Input::m_LastMousePos;
+	bool Input::m_FirstMouseMove = true;
+
 	bool Input::IsKeyPressed(KeyCode key)
 	{
 		auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
@@ -40,16 +43,68 @@ namespace Engine
 		return GetMousePosition().y;
 	}
 
-	void Input::LockMousePos()
+	glm::vec2 Input::GetMouseOffset()
 	{
-		auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glm::vec2 mousePos = GetMousePosition();
+
+		if (m_FirstMouseMove)
+		{
+			m_LastMousePos = mousePos;
+			m_FirstMouseMove = false;
+		}
+
+		glm::vec2 offset;
+		offset.x = mousePos.x - m_LastMousePos.x;
+		offset.y = m_LastMousePos.y - mousePos.y;
+
+		m_LastMousePos = mousePos;
+
+		return offset;
 	}
 
-	void Input::UnlockMousePos()
+	float Input::GetMouseOffsetX()
+	{
+		return GetMouseOffset().x;
+	}
+
+	float Input::GetMouseOffsetY()
+	{
+		return GetMouseOffset().y;
+	}
+
+	Input::MouseState Input::GetMouseState()
 	{
 		auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		int state = glfwGetInputMode(window, GLFW_CURSOR);
+
+		switch (state)
+		{
+		case GLFW_CURSOR_NORMAL:
+			return MouseState::NORMAL;
+		case GLFW_CURSOR_DISABLED:
+			return MouseState::LOCKED;
+		default:
+			break;
+		}
+
+		return MouseState::NORMAL;
+	}
+
+	void Input::SetMouseState(MouseState mouseState)
+	{
+		auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
+		switch (mouseState)
+		{
+		case Engine::Input::MouseState::NORMAL:
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			break;
+		case Engine::Input::MouseState::LOCKED:
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			break;
+		default:
+			break;
+		}
 	}
 
 	void Input::SetMouseVisiblity(bool enabled)

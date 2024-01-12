@@ -28,8 +28,7 @@ namespace Engine
 		inline const glm::mat4& GetView() const override { return m_View; }
 		inline const glm::mat4& GetViewProjection() const override { return m_ViewProj; }
 	private:
-		void RecalculateView() override;
-		inline void RecalculateViewProjection() override { m_ViewProj = m_Proj * m_View; }
+		inline void CalculateViewProjection() override { m_ViewProj = m_Proj * m_View; }
 	private:
 		glm::mat4 m_Proj, m_View;
 		glm::mat4 m_ViewProj;

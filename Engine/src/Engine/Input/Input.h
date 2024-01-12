@@ -10,14 +10,26 @@ namespace Engine
 	class Input
 	{
 	public:
+		enum class MouseState
+		{
+			NORMAL = 0,
+			LOCKED = 1
+		};
+	public:
 		static bool IsKeyPressed(KeyCode key);
 
 		static bool IsMouseButtonPressed(MouseCode button);
 		static glm::vec2 GetMousePosition();
 		static float GetMousePosX();
 		static float GetMousePosY();
-		static void LockMousePos();
-		static void UnlockMousePos();
+		static glm::vec2 GetMouseOffset();
+		static float GetMouseOffsetX();
+		static float GetMouseOffsetY();
+		static MouseState GetMouseState();
+		static void SetMouseState(MouseState mouseState);
 		static void SetMouseVisiblity(bool enabled);
+	private:
+		static glm::vec2 m_LastMousePos;
+		static bool m_FirstMouseMove;
 	};
 }

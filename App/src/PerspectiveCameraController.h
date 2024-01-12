@@ -5,7 +5,8 @@
 class PerspectiveCameraController
 {
 public:
-	PerspectiveCameraController(float fov, float aspectRatio, float nearPlane, float farPlane, const glm::vec3& position);
+	PerspectiveCameraController(float fov, float aspectRatio, float nearPlane, float farPlane, 
+		const Engine::Transform& transform);
 
 	void OnUpdate(Engine::DeltaTime deltaTime);
 	void OnEvent(Engine::Event& e);
@@ -21,6 +22,4 @@ private:
 	float m_MoveSpeed = 5.0f;
 	float m_RotationSpeed = 2.0f;
 	float m_Yaw = -90.0f, m_Pitch = 0.0f;
-
-	float m_LastX, m_LastY;
 };
