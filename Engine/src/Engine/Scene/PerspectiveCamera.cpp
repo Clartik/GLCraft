@@ -13,10 +13,8 @@ namespace Engine
 
 	void PerspectiveCamera::LookAt(const glm::vec3& lookAt)
 	{
-		Transform& transform = GetTransform();
-
-		m_View = glm::lookAt(transform.GetPosition(), lookAt, transform.GetUp());
-		transform.SetMatrix(m_View);
+		m_View = glm::lookAt(m_Transform.GetPosition(), lookAt, m_Transform.GetUp());
+		m_Transform.SetMatrix(glm::inverse(m_View));
 
 		CalculateViewProjection();
 	}

@@ -10,6 +10,7 @@ namespace Engine
 		void SetClearColor(const glm::vec4& color) override;
 		void Clear() override;
 
+		void SetDepth(bool enabled) override;
 		void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) override;
 	};
 }

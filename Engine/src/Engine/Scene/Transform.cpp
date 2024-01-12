@@ -23,16 +23,6 @@ namespace Engine
 	void Transform::SetRotation(const glm::vec3& rotation)
 	{
 		m_Rotation = rotation;
-
-		/*if (int(rotation.x) / 360 > 0)
-			m_Rotation.x = rotation.x / 360.0f;
-
-		if (int(rotation.y) / 360 > 0)
-			m_Rotation.y = rotation.y / 360.0f;
-
-		if (int(rotation.z) / 360 > 0)
-			m_Rotation.z = rotation.z / 360.0f;*/
-
 		CalculateMatrix();
 	}
 
@@ -84,13 +74,13 @@ namespace Engine
 	{
 		m_Matrix = glm::mat4(1.0f);
 
-		m_Matrix *= glm::scale(glm::mat4(1.0f), m_Scale);
+		m_Matrix *= glm::translate(glm::mat4(1.0f), m_Position);
 
 		m_Matrix *= glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 		m_Matrix *= glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 		m_Matrix *= glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
-		m_Matrix *= glm::translate(glm::mat4(1.0f), m_Position);
+		m_Matrix *= glm::scale(glm::mat4(1.0f), m_Scale);
 
 		CalculateVectors();
 		NotifyMatrixUpdate();

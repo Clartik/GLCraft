@@ -11,35 +11,26 @@ void PerspectiveCameraController::OnUpdate(Engine::DeltaTime deltaTime)
 {
 	glm::vec3 pos = m_Camera.GetTransform().GetPosition();
 
+	auto& forward = m_Camera.GetTransform().GetForward();
+	LOG_INFO("{0}, {1}, {2}", forward.x, forward.y, forward.z);
+
 	if (Engine::Input::IsKeyPressed(Engine::Key::W))
-	{
 		pos -= m_MoveSpeed * deltaTime * m_Camera.GetTransform().GetForward();
-	}
 
 	if (Engine::Input::IsKeyPressed(Engine::Key::S))
-	{
 		pos += m_MoveSpeed * deltaTime * m_Camera.GetTransform().GetForward();
-	}
 
 	if (Engine::Input::IsKeyPressed(Engine::Key::A))
-	{
 		pos -= m_MoveSpeed * deltaTime * m_Camera.GetTransform().GetRight();
-	}
 
 	if (Engine::Input::IsKeyPressed(Engine::Key::D))
-	{
 		pos += m_MoveSpeed * deltaTime * m_Camera.GetTransform().GetRight();
-	}
 
 	if (Engine::Input::IsKeyPressed(Engine::Key::Q))
-	{
 		pos += m_MoveSpeed * deltaTime * m_Camera.GetTransform().GetUp();
-	}
 
 	if (Engine::Input::IsKeyPressed(Engine::Key::E))
-	{
 		pos -= m_MoveSpeed * deltaTime * m_Camera.GetTransform().GetUp();
-	}
 
 	if (Engine::Input::IsMouseButtonPressed(Engine::Mouse::ButtonRight))
 	{
@@ -50,12 +41,22 @@ void PerspectiveCameraController::OnUpdate(Engine::DeltaTime deltaTime)
 		m_Pitch = offset.y * m_RotationSpeed * deltaTime;
 
 		Engine::Transform& camTransform = m_Camera.GetTransform();
+		glm::vec3 rotation = camTransform.GetRotation();
+
+		rotation.z = 0.0f;
+		if (rotation.x > 90.0f)
+		{
+			rotation.x = 90.0f;
+		}
+		else if (rotation.x < -90.0f)
+		{
+			rotation.x = -90.0f;
+		}
+		camTransform.SetRotation(rotation);
 		camTransform.Rotate({ m_Pitch, m_Yaw, 0.0f });
 	}
 	else
-	{
 		Engine::Input::SetMouseState(Engine::Input::MouseState::NORMAL);
-	}
 
 	m_Camera.GetTransform().SetPosition(pos);
 }
