@@ -16,8 +16,9 @@ namespace Engine
 			LOCKED = 1
 		};
 	public:
-		static bool IsKeyPressed(KeyCode key);
+		static void Init();
 
+		static bool IsKeyPressed(KeyCode key);
 		static bool IsMouseButtonPressed(MouseCode button);
 		static glm::vec2 GetMousePosition();
 		static float GetMousePosX();
@@ -30,6 +31,5 @@ namespace Engine
 		static void SetMouseVisiblity(bool enabled);
 	private:
 		static glm::vec2 m_LastMousePos;
-		static bool m_FirstMouseMove;
 	};
 }

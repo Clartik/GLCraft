@@ -14,6 +14,11 @@ namespace Engine
 		void SetRotation(const glm::vec3& rotation);
 		void SetScale(const glm::vec3& scale);
 
+		void Move(const glm::vec3& move);
+		void Rotate(const glm::vec3& rotate);
+		void Rotate(float degreees, const glm::vec3& axis);
+		void Scale(const glm::vec3& scale);
+
 		inline void SetMatrix(const glm::mat4& matrix) { m_Matrix = matrix; }
 
 		inline const glm::vec3& GetPosition() const { return m_Position; }
@@ -30,6 +35,7 @@ namespace Engine
 		void RemoveMatrixUpdateCallback(const MatrixUpdateCallback& callback);
 	private:
 		void CalculateMatrix();
+		void CalculateVectors();
 		void NotifyMatrixUpdate();
 	private:
 		glm::vec3 m_Position, m_Rotation, m_Scale;

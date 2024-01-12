@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Application.h"
 
+#include "Engine/Input/Input.h"
+
 #include "Time.h"
 #include "DeltaTime.h"
 
@@ -17,6 +19,8 @@ namespace Engine
 
 		m_Window = Window::Create(WindowProps(title));
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+
+		Input::Init();
 	}
 
 	Application::~Application()

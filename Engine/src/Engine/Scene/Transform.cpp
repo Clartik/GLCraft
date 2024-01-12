@@ -5,7 +5,7 @@ namespace Engine
 {
 	Transform::Transform(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale)
 		: m_Position(position), m_Rotation(rotation), m_Scale(scale), m_Matrix(1.0f),
-		m_Forward(0.0f, 0.0f, -1.0f), m_Right(1.0f, 0.0f, 0.0f), m_Up(0.0f, 1.0f, 0.0f)
+		m_Forward(0.0f, 0.0f, 1.0f), m_Right(1.0f, 0.0f, 0.0f), m_Up(0.0f, 1.0f, 0.0f)
 	{
 		CalculateMatrix();
 	}
@@ -24,14 +24,14 @@ namespace Engine
 	{
 		m_Rotation = rotation;
 
-		if (int(rotation.x) / 360 > 0)
+		/*if (int(rotation.x) / 360 > 0)
 			m_Rotation.x = rotation.x / 360.0f;
 
 		if (int(rotation.y) / 360 > 0)
 			m_Rotation.y = rotation.y / 360.0f;
 
 		if (int(rotation.z) / 360 > 0)
-			m_Rotation.z = rotation.z / 360.0f;
+			m_Rotation.z = rotation.z / 360.0f;*/
 
 		CalculateMatrix();
 	}
@@ -39,6 +39,30 @@ namespace Engine
 	void Transform::SetScale(const glm::vec3& scale)
 	{
 		m_Scale = scale;
+		CalculateMatrix();
+	}
+
+	void Transform::Move(const glm::vec3& move)
+	{
+		m_Position += move;
+		CalculateMatrix();
+	}
+
+	void Transform::Rotate(const glm::vec3& rotate)
+	{
+		m_Rotation += rotate;
+		CalculateMatrix();
+	}
+
+	void Transform::Rotate(float degreees, const glm::vec3& axis)
+	{
+		m_Rotation += degreees * axis;
+		CalculateMatrix();
+	}
+
+	void Transform::Scale(const glm::vec3& scale)
+	{
+		m_Scale += scale;
 		CalculateMatrix();
 	}
 
@@ -65,14 +89,18 @@ namespace Engine
 		m_Matrix *= glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 		m_Matrix *= glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 		m_Matrix *= glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-		
-		m_Up = glm::normalize(glm::vec3(m_Matrix[0][1], m_Matrix[1][1], m_Matrix[2][1]));
-		m_Forward = -glm::normalize(glm::vec3(m_Matrix[0][2], m_Matrix[1][2], m_Matrix[2][2]));
-		m_Right = glm::normalize(glm::vec3(m_Matrix[0][0], m_Matrix[1][0], m_Matrix[2][0]));
 
 		m_Matrix *= glm::translate(glm::mat4(1.0f), m_Position);
 
+		CalculateVectors();
 		NotifyMatrixUpdate();
+	}
+
+	void Transform::CalculateVectors()
+	{
+		m_Right = glm::vec3(m_Matrix[0]);
+		m_Forward = glm::vec3(m_Matrix[2]);
+		m_Up = glm::cross(m_Forward, m_Right);
 	}
 
 	void Transform::NotifyMatrixUpdate()

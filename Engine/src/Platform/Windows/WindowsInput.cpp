@@ -8,7 +8,12 @@
 namespace Engine
 {
 	glm::vec2 Input::m_LastMousePos;
-	bool Input::m_FirstMouseMove = true;
+
+	void Input::Init()
+	{
+		auto& window = Application::Get().GetWindow();
+		m_LastMousePos = { window.GetWidth() / 2, window.GetHeight() / 2 };
+	}
 
 	bool Input::IsKeyPressed(KeyCode key)
 	{
@@ -46,12 +51,6 @@ namespace Engine
 	glm::vec2 Input::GetMouseOffset()
 	{
 		glm::vec2 mousePos = GetMousePosition();
-
-		if (m_FirstMouseMove)
-		{
-			m_LastMousePos = mousePos;
-			m_FirstMouseMove = false;
-		}
 
 		glm::vec2 offset;
 		offset.x = mousePos.x - m_LastMousePos.x;
