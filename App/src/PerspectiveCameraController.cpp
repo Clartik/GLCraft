@@ -53,7 +53,7 @@ void PerspectiveCameraController::OnUpdate(Engine::DeltaTime deltaTime)
 			rotation.x = -90.0f;
 		}
 		camTransform.SetRotation(rotation);
-		camTransform.Rotate({ m_Pitch, m_Yaw, 0.0f });
+		camTransform.Rotate({ -m_Pitch, -m_Yaw, 0.0f });
 	}
 	else
 		Engine::Input::SetMouseState(Engine::Input::MouseState::NORMAL);

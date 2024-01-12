@@ -54,7 +54,7 @@ namespace Engine
 
 		glm::vec2 offset;
 		offset.x = mousePos.x - m_LastMousePos.x;
-		offset.y = m_LastMousePos.y - mousePos.y;
+		offset.y = mousePos.y - m_LastMousePos.y;
 
 		m_LastMousePos = mousePos;
 
