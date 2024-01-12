@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/gtc/quaternion.hpp>
+
 namespace Engine
 {
 	class Transform
@@ -19,10 +21,11 @@ namespace Engine
 		void Rotate(float degreees, const glm::vec3& axis);
 		void Scale(const glm::vec3& scale);
 
-		inline void SetMatrix(const glm::mat4& matrix) { m_Matrix = matrix; }
+		void SetMatrix(const glm::mat4& matrix);
 
 		inline const glm::vec3& GetPosition() const { return m_Position; }
-		inline const glm::vec3& GetRotation() const { return m_Rotation; }
+		inline const glm::vec3& GetEulerRotation() const { return m_RotationEuler; }
+		inline const glm::quat& GetQuaternionRotation() const { return m_RotationQuat; }
 		inline const glm::vec3& GetScale() const { return m_Scale; }
 
 		inline const glm::mat4& GetMatrix() const { return m_Matrix; }
@@ -38,7 +41,8 @@ namespace Engine
 		void CalculateVectors();
 		void NotifyMatrixUpdate();
 	private:
-		glm::vec3 m_Position, m_Rotation, m_Scale;
+		glm::vec3 m_Position, m_RotationEuler, m_Scale;
+		glm::quat m_RotationQuat;
 		glm::mat4 m_Matrix;
 
 		glm::vec3 m_Forward, m_Right, m_Up;

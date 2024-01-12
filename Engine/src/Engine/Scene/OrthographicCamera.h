@@ -13,7 +13,7 @@ namespace Engine
 			float nearPlane = -1.0f, float farPlane = 1.0f);
 		
 		const glm::vec3& GetPosition() const { return m_Position; }
-		const float& GetRotation() const { return m_Rotation; }
+		const float& GetEulerRotation() const { return m_Rotation; }
 
 		void SetPosition(const glm::vec3& position);
 		void SetRotation(float rotation);
