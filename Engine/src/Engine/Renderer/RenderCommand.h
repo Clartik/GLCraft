@@ -22,9 +22,9 @@ namespace Engine
 			s_RendererAPI->DrawIndexed(vertexArray);
 		}
 
-		inline static void SetDepth(bool enabled)
+		inline static void ShowDepth(bool enabled)
 		{
-			s_RendererAPI->SetDepth(enabled);
+			s_RendererAPI->ShowDepth(enabled);
 		}
 	private:
 		static RendererAPI* s_RendererAPI;

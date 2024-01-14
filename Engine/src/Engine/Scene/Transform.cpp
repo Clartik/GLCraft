@@ -6,7 +6,8 @@
 namespace Engine
 {
 	Transform::Transform(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale)
-		: m_Position(position), m_RotationQuat(rotation), m_Scale(scale), m_Matrix(1.0f),
+		: m_Position(position), m_RotationEuler(rotation), m_Scale(scale), 
+		m_RotationQuat(glm::radians(m_RotationEuler)), m_Matrix(1.0f),
 		m_Forward(0.0f, 0.0f, 1.0f), m_Right(1.0f, 0.0f, 0.0f), m_Up(0.0f, 1.0f, 0.0f)
 	{
 		CalculateMatrix();
@@ -31,7 +32,7 @@ namespace Engine
 
 	void Transform::SetRotation(const glm::quat& rotation)
 	{
-		m_RotationQuat = m_RotationEuler;
+		m_RotationQuat = rotation;
 		m_RotationEuler = glm::degrees(glm::eulerAngles(m_RotationQuat));
 		CalculateMatrix();
 	}

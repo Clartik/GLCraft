@@ -1,49 +1,14 @@
 #include "MainLayer.h"
 
 #include "Engine/Renderer/Renderer.h"
+#include "Engine/Core/Time.h"
 
 MainLayer::MainLayer()
-	: Layer("Main Layer"), m_Transform(glm::vec3(0.0f), glm::vec3(0), glm::vec3(1)),
-	m_TransformCube(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0), glm::vec3(1))
+	: Layer("Main Layer")
 {
-	m_VAO = Engine::VertexArray::Create();
-	m_VA = Engine::VertexArray::Create();
+	Engine::RenderCommand::ShowDepth(true);
 
-	float quadVertices[] = {
-		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		-0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-	};
-
-	float cubeVertices[] = {
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-
-		-0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-	};
-
-	auto vertexBuffer = Engine::VertexBuffer::Create(quadVertices, sizeof(quadVertices));
-	auto vertexBufferCube = Engine::VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
-	Engine::BufferLayout layout = {
-		{ Engine::ShaderDataType::Float3, "pos" },
-		{ Engine::ShaderDataType::Float4, "color" }
-	};
-
-	vertexBuffer->SetLayout(layout);
-	vertexBufferCube->SetLayout(layout);
-	m_VAO->AddVertexBuffer(vertexBuffer);
-	m_VA->AddVertexBuffer(vertexBufferCube);
-
-	unsigned int quadIndices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
+	std::vector<Engine::Vertex> cubeVerts;
 
 	unsigned int cubeIndices[] = {
 		// FRONT
@@ -71,12 +36,41 @@ MainLayer::MainLayer()
 		1, 0, 4
 	};
 
-	auto indexBuffer = Engine::IndexBuffer::Create(quadIndices, sizeof(quadIndices) / sizeof(unsigned int));
-	auto indexBufferCube = Engine::IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(unsigned int));
-	m_VAO->SetIndexBuffer(indexBuffer);
-	m_VA->SetIndexBuffer(indexBufferCube);
-
 	m_Shader = Engine::Shader::Create("Basic", "assets/shaders/Basic.vert", "assets/shaders/Basic.frag");
+
+	for (int height = -64; height < 0; height++)
+	{
+		for (int row = 0; row < 16; row++)
+		{
+			for (int column = 0; column < 16; column++)
+			{
+				Engine::GameObject cube(Engine::Transform({ row, height, column }));
+				Engine::Mesh& cubeMesh = cube.GetMesh();
+
+				cubeVerts.clear();
+				float red, green;
+
+				if (row % 2)
+				{
+					red = 1.0f;
+					green = 0;
+				}
+				else
+				{
+					green = 1.0f;
+					red = 0;
+				}
+
+				Engine::Mesh::CreateCube(cubeVerts, glm::vec3(0.5f), glm::vec4(red, green, 0, 1));
+
+				cubeMesh.LoadVertices(cubeVerts.data(), 8 * sizeof(Engine::Vertex));
+				cubeMesh.LoadIndices(cubeIndices, sizeof(cubeIndices));
+				cubeMesh.LoadShader(m_Shader);
+
+				m_Cubes.push_back(cube);
+			}
+		}
+	}
 
 	const auto& window = Engine::Application::Get().GetWindow();
 	float aspectRatio = (float)window.GetWidth() / (float)window.GetHeight();
@@ -89,8 +83,6 @@ MainLayer::MainLayer()
 
 	Engine::Camera& camera = m_CameraController->GetCamera();
 	camera.LookAt(glm::vec3(0.0f));
-
-	Engine::RenderCommand::SetDepth(true);
 }
 
 MainLayer::~MainLayer()
@@ -110,13 +102,16 @@ void MainLayer::OnUpdate(Engine::DeltaTime deltaTime)
 	Engine::RenderCommand::SetClearColor({ 0.2f, 0.2f, 0.2f, 1.0f });
 	Engine::RenderCommand::Clear();
 
+	int fps = 1.0f / deltaTime;
+	LOG_INFO("FPS: {0}", fps);
+
 	m_CameraController->OnUpdate(deltaTime);
 
 	//Engine::Renderer::BeginScene(*m_Camera);
 	Engine::Renderer::BeginScene(m_CameraController->GetCamera());
 
-	Engine::Renderer::Submit(m_Shader, m_VAO, m_Transform);
-	Engine::Renderer::Submit(m_Shader, m_VA, m_TransformCube);
+	for (auto& cube : m_Cubes)
+		Engine::Renderer::Submit(&cube);
 
 	Engine::Renderer::EndScene();
 

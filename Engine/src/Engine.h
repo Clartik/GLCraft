@@ -23,3 +23,5 @@
 
 #include "Engine/Scene/PerspectiveCamera.h"
 #include "Engine/Scene/OrthographicCamera.h"
+
+#include "Engine/Scene/GameObject.h"

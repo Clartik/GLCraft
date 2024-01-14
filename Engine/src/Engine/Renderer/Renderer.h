@@ -4,6 +4,7 @@
 #include "Shader.h"
 
 #include "Engine/Scene/Camera.h"
+#include "Engine/Scene/GameObject.h"
 
 namespace Engine
 {
@@ -13,7 +14,7 @@ namespace Engine
 		static void BeginScene(Camera& camera);
 		static void EndScene();
 
-		static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const Transform& transform);
+		static void Submit(GameObject* gameobject);
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	private:

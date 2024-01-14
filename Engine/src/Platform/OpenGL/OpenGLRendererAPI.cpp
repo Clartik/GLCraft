@@ -15,7 +15,7 @@ namespace Engine
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRendererAPI::SetDepth(bool enabled)
+	void OpenGLRendererAPI::ShowDepth(bool enabled)
 	{
 		if (enabled)
 		{

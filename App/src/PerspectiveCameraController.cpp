@@ -11,7 +11,7 @@ void PerspectiveCameraController::OnUpdate(Engine::DeltaTime deltaTime)
 {
 	glm::vec3 pos = m_Camera.GetTransform().GetPosition();
 
-	LOG_INFO("Position: {0}, {1}, {2}", pos.x, pos.y, pos.z);
+	//LOG_INFO("Position: {0}, {1}, {2}", pos.x, pos.y, pos.z);
 
 	if (Engine::Input::IsKeyPressed(Engine::Key::W))
 		pos -= m_MoveSpeed * deltaTime * m_Camera.GetTransform().GetForward();

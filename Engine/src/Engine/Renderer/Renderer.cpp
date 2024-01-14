@@ -14,11 +14,14 @@ namespace Engine
 	{
 	}
 
-	void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const Transform& transform)
+	void Renderer::Submit(GameObject* gameobject)
 	{
+		auto shader = gameobject->GetMesh().GetShader();
+		auto vertexArray = gameobject->GetMesh().GetVertexArray();
+
 		shader->Bind();
 		shader->SetUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
-		shader->SetUniformMat4("u_Model", transform.GetMatrix());
+		shader->SetUniformMat4("u_Model", gameobject->GetTransform().GetMatrix());
 
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);
