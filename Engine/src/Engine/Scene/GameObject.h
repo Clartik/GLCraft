@@ -13,9 +13,9 @@ namespace Engine
 		~GameObject() {}
 		
 		inline Transform& GetTransform() { return m_Transform; }
-		inline Mesh& GetMesh() { return m_Mesh; }
+		inline Mesh* GetMesh() { return m_Mesh; }
 	private:
 		Transform m_Transform;
-		Mesh m_Mesh;
+		Mesh* m_Mesh = nullptr;
 	};
 }

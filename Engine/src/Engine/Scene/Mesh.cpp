@@ -1,41 +1,75 @@
 #include "pch.h"
 #include "Mesh.h"
 
-const unsigned int VERTEX_AMOUNT_QUAD = 4;
-const unsigned int VERTEX_AMOUNT_CUBE = 8;
-
 namespace Engine
 {
-	void Mesh::CreateQuad(std::vector<Vertex>& vertices, const glm::vec2& size, const glm::vec4& color)
+	void Mesh::CreateQuad(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, 
+		const glm::vec2& size, const glm::vec4& color)
 	{
 		vertices.resize(VERTEX_AMOUNT_QUAD);
+		indices.resize(INDEX_AMOUNT_QUAD);
 
 		vertices[0].Position = { -size.x, -size.y, 0.0f };
 		vertices[1].Position = {  size.x, -size.y, 0.0f };
 		vertices[2].Position = {  size.x,  size.y, 0.0f };
 		vertices[3].Position = { -size.x,  size.y, 0.0f };
 
+		indices = {
+			// FRONT
+			0, 1, 2,
+			2, 3, 0
+		};
+
 		for (int i = 0; i < VERTEX_AMOUNT_QUAD; i++)
 			vertices[i].Color = color;
 	}
 
-	void Mesh::CreateCube(std::vector<Vertex>& vertices, const glm::vec3& size, const glm::vec4& color)
+	void Mesh::CreateCube(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, 
+		const glm::vec3& size, const glm::vec4& color)
 	{
 		vertices.resize(VERTEX_AMOUNT_CUBE);
+		indices.resize(INDEX_AMOUNT_CUBE);
 
 		vertices[0].Position = { -size.x, -size.y, -size.z };
-		vertices[1].Position = { size.x, -size.y, -size.z };
-		vertices[2].Position = { size.x,  size.y, -size.z };
+		vertices[2].Position = {  size.x,  size.y, -size.z };
+		vertices[1].Position = {  size.x, -size.y, -size.z };
 		vertices[3].Position = { -size.x,  size.y, -size.z };
 
 		vertices[4].Position = { -size.x, -size.y, size.z };
-		vertices[5].Position = { size.x, -size.y, size.z };
-		vertices[6].Position = { size.x,  size.y, size.z };
+		vertices[5].Position = {  size.x, -size.y, size.z };
+		vertices[6].Position = {  size.x,  size.y, size.z };
 		vertices[7].Position = { -size.x,  size.y, size.z };
+
+		indices = {
+			// FRONT
+			0, 1, 2,
+			2, 3, 0,
+
+			// RIGHT
+			4, 0, 3,
+			3, 7, 4,
+
+			// BACK
+			4, 5, 6,
+			6, 7, 4,
+
+			// LEFT
+			1, 5, 6,
+			6, 2, 1,
+
+			// TOP
+			3, 2, 6,
+			6, 7, 3,
+
+			// BOTTOM
+			4, 5, 1,
+			1, 0, 4
+		};
 
 		for (int i = 0; i < VERTEX_AMOUNT_CUBE; i++)
 			vertices[i].Color = color;
 	}
+
 
 	Mesh::Mesh()
 	{

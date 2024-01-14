@@ -3,6 +3,12 @@
 #include "Engine/Renderer/VertexArray.h"
 #include "Engine/Renderer/Shader.h"
 
+const unsigned int VERTEX_AMOUNT_QUAD = 4;
+const unsigned int INDEX_AMOUNT_QUAD = 6;
+
+const unsigned int VERTEX_AMOUNT_CUBE = 8;
+const unsigned int INDEX_AMOUNT_CUBE = 36;
+
 namespace Engine
 {
 	struct Vertex
@@ -11,11 +17,19 @@ namespace Engine
 		glm::vec4 Color;
 	};
 
+	struct MeshData
+	{
+		Vertex* Vertices;
+		unsigned int* Indices;
+	};
+
 	class Mesh
 	{
 	public:
-		static void CreateQuad(std::vector<Vertex>& vertices, const glm::vec2& size, const glm::vec4& color);
-		static void CreateCube(std::vector<Vertex>& vertices, const glm::vec3& size, const glm::vec4& color);
+		static void CreateQuad(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, 
+			const glm::vec2& size, const glm::vec4& color);
+		static void CreateCube(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, 
+			const glm::vec3& size, const glm::vec4& color);
 	public:
 		Mesh();
 		~Mesh();

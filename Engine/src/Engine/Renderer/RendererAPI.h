@@ -4,6 +4,11 @@
 
 namespace Engine
 {
+	enum class CullingMode
+	{
+		NONE = 0, BACK, FRONT, BOTH
+	};
+
 	class RendererAPI
 	{
 	public:
@@ -16,6 +21,9 @@ namespace Engine
 		virtual void Clear() = 0;
 
 		virtual void ShowDepth(bool enabled) = 0;
+		virtual void ShowWireframe() = 0;
+		virtual void SetWindingOrder(bool counterClockwise) = 0;
+		virtual void SetCullingMode(CullingMode mode) = 0;
 		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;
 
 		inline static API GetAPI() { return s_API; }
