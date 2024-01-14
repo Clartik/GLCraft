@@ -5,7 +5,7 @@
 class OrthographicCameraController
 {
 public:
-	OrthographicCameraController(float aspectRatio, const glm::vec3& position, float zoomLevel = 1.0f);
+	OrthographicCameraController(float aspectRatio, const Engine::Transform& transform, float zoomLevel = 1.0f);
 	~OrthographicCameraController();
 
 	void OnUpdate(Engine::DeltaTime deltaTime);
@@ -22,6 +22,6 @@ private:
 	Engine::OrthographicCamera m_Camera;
 
 	float m_MoveSpeed = 5.0f;
-	float m_RotationSpeed = 5.0f;
+	float m_RotationSpeed = 60.0f;
 	float m_ZoomAmount = 0.25f;
 };

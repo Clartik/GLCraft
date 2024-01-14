@@ -9,11 +9,13 @@ namespace Engine
 	public:
 		using MatrixUpdateCallback = std::function<void()>;
 	public:
-		Transform(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
+		Transform(const glm::vec3& position = glm::vec3(0), const glm::vec3& rotation = glm::vec3(0), 
+			const glm::vec3& scale = glm::vec3(1));
 		~Transform();
 
 		void SetPosition(const glm::vec3& position);
 		void SetRotation(const glm::vec3& rotation);
+		void SetRotation(const glm::quat& rotation);
 		void SetScale(const glm::vec3& scale);
 
 		void Move(const glm::vec3& move);

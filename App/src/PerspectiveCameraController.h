@@ -9,10 +9,6 @@ public:
 		const Engine::Transform& transform);
 
 	void OnUpdate(Engine::DeltaTime deltaTime);
-	void OnEvent(Engine::Event& e);
-
-	bool OnMouseMoved(Engine::MouseMovedEvent& e);
-	bool OnMouseScrolled(Engine::MouseScrolledEvent& e);
 
 	inline Engine::PerspectiveCamera& GetCamera() { return m_Camera; }
 	inline const Engine::PerspectiveCamera& GetCamera() const { return m_Camera; }

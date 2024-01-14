@@ -81,12 +81,12 @@ MainLayer::MainLayer()
 	const auto& window = Engine::Application::Get().GetWindow();
 	float aspectRatio = (float)window.GetWidth() / (float)window.GetHeight();
 
-	/*m_CameraController = std::make_unique<OrthographicCameraController>(aspectRatio, glm::vec3(0.0f, 0.0f, -1.0f));
-	Engine::Camera& camera = m_CameraController->GetCamera();
-	camera.LookAt(glm::vec3(0.0f));*/
+	/*m_CameraController = std::make_unique<OrthographicCameraController>(aspectRatio, 
+		Engine::Transform({0, 0, 1}));*/
 
 	m_CameraController = std::make_unique<PerspectiveCameraController>(45.0f, aspectRatio, 0.1f, 100.0f, 
-		Engine::Transform(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f), glm::vec3(1.0f)));
+		Engine::Transform(glm::vec3(0.0f, 0.0f, -1.0f)));
+
 	Engine::Camera& camera = m_CameraController->GetCamera();
 	camera.LookAt(glm::vec3(0.0f));
 
@@ -129,5 +129,5 @@ void MainLayer::OnUpdate(Engine::DeltaTime deltaTime)
 
 void MainLayer::OnEvent(Engine::Event& e)
 {
-	m_CameraController->OnEvent(e);
+	//m_CameraController->OnEvent(e);
 }

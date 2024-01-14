@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "OrthographicCameraController.h"
 
-OrthographicCameraController::OrthographicCameraController(float aspectRatio, const glm::vec3& position, float zoomLevel)
+OrthographicCameraController::OrthographicCameraController(float aspectRatio, 
+	const Engine::Transform& transform, float zoomLevel)
 	: m_AspectRatio(aspectRatio), m_ZoomLevel(zoomLevel), 
-	m_Camera(-aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel, position)
+	m_Camera(-aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel, 
+		Engine::Transform(transform))
 {
 }
 
@@ -13,29 +15,30 @@ OrthographicCameraController::~OrthographicCameraController()
 
 void OrthographicCameraController::OnUpdate(Engine::DeltaTime deltaTime)
 {
-	glm::vec3 pos = m_Camera.GetPosition();
+	Engine::Transform& camTransform = m_Camera.GetTransform();
+	glm::vec3 pos = camTransform.GetPosition();
+	glm::vec3 rotation = camTransform.GetEulerRotation();
 
 	if (Engine::Input::IsKeyPressed(Engine::Key::W))
-	{
-		pos.y += m_MoveSpeed * deltaTime;
-	}
+		pos += m_MoveSpeed * deltaTime * camTransform.GetUp();
 
 	if (Engine::Input::IsKeyPressed(Engine::Key::S))
-	{
-		pos.y -= m_MoveSpeed * deltaTime;
-	}
+		pos -= m_MoveSpeed * deltaTime * camTransform.GetUp();
 
 	if (Engine::Input::IsKeyPressed(Engine::Key::A))
-	{
-		pos.x -= m_MoveSpeed * deltaTime;
-	}
+		pos -= m_MoveSpeed * deltaTime * camTransform.GetRight();
 
 	if (Engine::Input::IsKeyPressed(Engine::Key::D))
-	{
-		pos.x += m_MoveSpeed * deltaTime;
-	}
+		pos += m_MoveSpeed * deltaTime * camTransform.GetRight();
 
-	m_Camera.SetPosition(pos);
+	if (Engine::Input::IsKeyPressed(Engine::Key::Q))
+		rotation -= m_RotationSpeed * deltaTime * glm::vec3(0, 0, 1);
+
+	if (Engine::Input::IsKeyPressed(Engine::Key::E))
+		rotation += m_RotationSpeed * deltaTime * glm::vec3(0, 0, 1);
+
+	camTransform.SetPosition(pos);
+	camTransform.SetRotation(rotation);
 }
 
 void OrthographicCameraController::OnEvent(Engine::Event& e)
@@ -50,7 +53,7 @@ bool OrthographicCameraController::OnMouseScrolled(Engine::MouseScrolledEvent& e
 	m_ZoomLevel -= m_ZoomAmount * yScroll;
 
 	float horizontal = m_AspectRatio * m_ZoomLevel;
-	m_Camera.SetProjection(-horizontal, horizontal, -m_ZoomLevel, m_ZoomLevel);
+	m_Camera.SetClippingPlanes(-horizontal, horizontal, -m_ZoomLevel, m_ZoomLevel);
 
 	return true;
 }

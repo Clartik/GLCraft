@@ -29,6 +29,13 @@ namespace Engine
 		CalculateMatrix();
 	}
 
+	void Transform::SetRotation(const glm::quat& rotation)
+	{
+		m_RotationQuat = m_RotationEuler;
+		m_RotationEuler = glm::degrees(glm::eulerAngles(m_RotationQuat));
+		CalculateMatrix();
+	}
+
 	void Transform::SetScale(const glm::vec3& scale)
 	{
 		m_Scale = scale;
