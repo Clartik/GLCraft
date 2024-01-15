@@ -36,7 +36,7 @@ void PerspectiveCameraController::OnUpdate(Engine::DeltaTime deltaTime)
 		Engine::Input::SetMouseState(Engine::Input::MouseState::LOCKED);
 		glm::vec2 offset = Engine::Input::GetMouseOffset();
 
-		m_Yaw = offset.x * m_RotationSpeed * deltaTime;
+		m_Yaw = -offset.x * m_RotationSpeed * deltaTime;
 		m_Pitch = -offset.y * m_RotationSpeed * deltaTime;
 
 		Engine::Transform& camTransform = m_Camera.GetTransform();

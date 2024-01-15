@@ -62,6 +62,31 @@ namespace Engine
 		glUseProgram(0);
 	}
 
+	void OpenGLShader::SetUniformFloat(const std::string& name, float value)
+	{
+		glUniform1f(GetUniformLocation(name), value);
+	}
+
+	void OpenGLShader::SetUniformInt(const std::string& name, int value)
+	{
+		glUniform1i(GetUniformLocation(name), value);
+	}
+
+	void OpenGLShader::SetUniformVec2(const std::string& name, const glm::vec2& value)
+	{
+		glUniform2f(GetUniformLocation(name), value.x, value.y);
+	}
+
+	void OpenGLShader::SetUniformVec3(const std::string& name, const glm::vec3& value)
+	{
+		glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
+	}
+
+	void OpenGLShader::SetUniformVec4(const std::string& name, const glm::vec4& value)
+	{
+		glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
+	}
+
 	void OpenGLShader::SetUniformMat4(const std::string& name, const glm::mat4& value)
 	{
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));

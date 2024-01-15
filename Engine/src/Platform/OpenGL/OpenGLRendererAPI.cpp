@@ -30,7 +30,7 @@ namespace Engine
 
 	void OpenGLRendererAPI::ShowWireframe()
 	{
-		glPolygonMode(GL_FRONT, GL_LINE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
 	void OpenGLRendererAPI::SetWindingOrder(bool counterClockwise)

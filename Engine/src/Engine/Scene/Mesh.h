@@ -14,6 +14,7 @@ namespace Engine
 	struct Vertex
 	{
 		glm::vec3 Position;
+		glm::vec2 TexCoord;
 		glm::vec4 Color;
 	};
 
@@ -28,8 +29,9 @@ namespace Engine
 	public:
 		static void CreateQuad(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, 
 			const glm::vec2& size, const glm::vec4& color);
+		static void CreateCube(std::vector<Vertex>& vertices, const glm::vec4& color);
 		static void CreateCube(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, 
-			const glm::vec3& size, const glm::vec4& color);
+			const glm::vec4& color);
 	public:
 		Mesh();
 		~Mesh();

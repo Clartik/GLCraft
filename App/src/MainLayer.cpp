@@ -26,84 +26,34 @@ namespace GLCraft
 		: Layer("Main Layer")
 	{
 		Engine::RenderCommand::ShowDepth(true);
-		Engine::RenderCommand::SetWindingOrder(false);
 		Engine::RenderCommand::SetCullingMode(Engine::CullingMode::BACK);
 
-		std::shared_ptr<Engine::Shader> shader = Engine::Shader::Create("Basic", "assets/shaders/Basic.vert", "assets/shaders/Basic.frag");
+		std::shared_ptr<Engine::Shader> shader = Engine::Shader::Create("Basic", 
+			"assets/shaders/Texture.vert", "assets/shaders/Texture.frag");
 
-		std::vector<Engine::Vertex> chunkVertices;
-		std::vector<unsigned int> chunkIndices;
+		m_Texture = Engine::Texture2D::Create("assets/textures/KMLOGOPresents.png");
 
-		int chunkVertexIndex = 0;
+		shader->Bind();
+		shader->SetUniformInt("u_Texture", 0);
 
-		for (int height = 0; height < CHUNK_HEIGHT; height++)
-		{
-			for (int row = 0; row < CHUNK_ROWS; row++)
-			{
-				for (int column = 0; column < CHUNK_COLUMNS; column++)
-				{
-					Block block(Engine::Transform({ row, height, column }));
-					m_Chunk[height][row][column] = block;
-				}
-			}
-		}
+		m_Chunk = new Chunk({ 0, 0 });
+		m_Chunk->GetMesh()->LoadShader(shader);
 
-		for (int height = 0; height < CHUNK_HEIGHT; height++)
-		{
-			for (int row = 0; row < CHUNK_ROWS; row++)
-			{
-				for (int column = 0; column < CHUNK_COLUMNS; column++)
-				{
-					Block& block = m_Chunk[height][row][column];
+		std::vector<Engine::Vertex> verts;
+		std::vector<unsigned int> indices;
 
-					if (row - 1 < 0)
-					{
-						Engine::Vertex* vertices = block.GetFace(BlockFaceType::RIGHT);
-						glm::vec3 location = { row, height, column };
-						AddFace(chunkVertices, chunkIndices, location, vertices, chunkVertexIndex);
-					}
+		Engine::Mesh::CreateQuad(verts, indices, glm::vec2(1.0f), { 1, 0, 0, 1 });
+		m_Square.LoadVertices(verts.data(), verts.size() * sizeof(Engine::Vertex));
+		m_Square.LoadIndices(indices.data(), indices.size());
+		m_Square.LoadShader(shader);
 
-					if (row + 1 > CHUNK_ROWS - 1)
-					{
-						Engine::Vertex* vertices = block.GetFace(BlockFaceType::LEFT);
-						glm::vec3 location = { row, height, column };
-						AddFace(chunkVertices, chunkIndices, location, vertices, chunkVertexIndex);
-					}
+		Block block;
+		Engine::Vertex* blockVerts = block.GetVertices();
+		unsigned int* blockIndices = block.GetIndices();
 
-					if (column - 1 < 0)
-					{
-						Engine::Vertex* vertices = block.GetFace(BlockFaceType::FRONT);
-						glm::vec3 location = { row, height, column };
-						AddFace(chunkVertices, chunkIndices, location, vertices, chunkVertexIndex);
-					}
-
-					if (column + 1 > CHUNK_COLUMNS - 1)
-					{
-						Engine::Vertex* vertices = block.GetFace(BlockFaceType::BACK);
-						glm::vec3 location = { row, height, column };
-						AddFace(chunkVertices, chunkIndices, location, vertices, chunkVertexIndex);
-					}
-
-					if (height - 1 < 0)
-					{
-						Engine::Vertex* vertices = block.GetFace(BlockFaceType::BOTTOM);
-						glm::vec3 location = { row, height, column };
-						AddFace(chunkVertices, chunkIndices, location, vertices, chunkVertexIndex);
-					}
-
-					if (height + 1 > CHUNK_HEIGHT - 1)
-					{
-						Engine::Vertex* vertices = block.GetFace(BlockFaceType::TOP);
-						glm::vec3 location = { row, height, column };
-						AddFace(chunkVertices, chunkIndices, location, vertices, chunkVertexIndex);
-					}
-				}
-			}
-		}
-
-		m_ChunkMesh.LoadVertices(chunkVertices.data(), sizeof(Engine::Vertex) * chunkVertices.size());
-		m_ChunkMesh.LoadIndices(chunkIndices.data(), chunkIndices.size());
-		m_ChunkMesh.LoadShader(shader);
+		m_Cube.LoadVertices(blockVerts, BLOCK_VERTEX_AMOUNT * sizeof(Engine::Vertex));
+		m_Cube.LoadIndices(blockIndices, INDEX_AMOUNT_CUBE);
+		m_Cube.LoadShader(shader);
 
 		const auto& window = Engine::Application::Get().GetWindow();
 		float aspectRatio = (float)window.GetWidth() / (float)window.GetHeight();
@@ -112,7 +62,7 @@ namespace GLCraft
 			Engine::Transform({0, 0, 1}));*/
 
 		m_CameraController = std::make_unique<PerspectiveCameraController>(45.0f, aspectRatio, 0.1f, 100.0f,
-			Engine::Transform(glm::vec3(0.0f, 65, -5.0f)));
+			Engine::Transform(glm::vec3(0.0f, 0, 10.0f)));
 
 		Engine::Camera& camera = m_CameraController->GetCamera();
 		camera.LookAt(glm::vec3(0.0f));
@@ -140,10 +90,15 @@ namespace GLCraft
 
 		m_CameraController->OnUpdate(deltaTime);
 
+		m_Texture->Bind();
 		Engine::Renderer::BeginScene(m_CameraController->GetCamera());
 
-		Engine::Transform transform = Engine::Transform();
-		Engine::Renderer::Submit(&m_ChunkMesh, &transform);
+		//Engine::Renderer::Submit(m_Chunk->GetMesh(), &m_Chunk->GetTransform());
+		/*Engine::Transform transform = Engine::Transform();
+		Engine::Renderer::Submit(&m_Square, &transform);*/
+
+		Engine::Transform transform2 = Engine::Transform({5, 0, 0});
+		Engine::Renderer::Submit(&m_Cube, &transform2);
 
 		Engine::Renderer::EndScene();
 

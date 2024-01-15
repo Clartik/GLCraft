@@ -5,7 +5,13 @@ project "Engine"
    targetdir "bin/%{cfg.buildcfg}"
    staticruntime "off"
 
-   files { "src/**.h", "src/**.cpp" }
+   files 
+   { 
+       "src/**.h", 
+       "src/**.cpp",
+       "vendor/stb_image/**.cpp",
+       "vendor/stb_image/**.h"
+   }
 
    pchheader "pch.h"
    pchsource "src/pch.cpp"
@@ -21,7 +27,8 @@ project "Engine"
       "../vendor/glm",
       "vendor/GLFW/include",
       "vendor/GLAD/include",
-      "vendor/spdlog/include"
+      "vendor/spdlog/include",
+      "vendor/stb_image"
    }
 
    links

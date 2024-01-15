@@ -17,9 +17,10 @@
 #include "Engine/Events/MouseEvent.h"
 
 #include "Engine/Renderer/Renderer.h"
-#include "Engine/Renderer/Shader.h"
 #include "Engine/Renderer/VertexArray.h"
 #include "Engine/Renderer/Buffer.h"
+#include "Engine/Renderer/Shader.h"
+#include "Engine/Renderer/Texture.h"
 
 #include "Engine/Scene/PerspectiveCamera.h"
 #include "Engine/Scene/OrthographicCamera.h"
