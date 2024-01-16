@@ -81,7 +81,7 @@ namespace GLCraft
 			m_Vertices[i + 1].TexCoord = { 0, 1 };
 		}
 
-		for (int i = 0; i < VERTEX_AMOUNT_CUBE; i++)
+		for (int i = 0; i < BLOCK_VERTEX_AMOUNT; i++)
 			m_Vertices[i].Color = { 1, 0, 0, 1 };
 
 		m_IndicesMap[BlockFaceType::FRONT] = {

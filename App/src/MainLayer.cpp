@@ -28,8 +28,9 @@ namespace GLCraft
 		Engine::RenderCommand::ShowDepth(true);
 		Engine::RenderCommand::SetCullingMode(Engine::CullingMode::BACK);
 
-		std::shared_ptr<Engine::Shader> shader = Engine::Shader::Create("Basic", 
-			"assets/shaders/Texture.vert", "assets/shaders/Texture.frag");
+		//std::shared_ptr<Engine::Shader> shader = Engine::Shader::Create("assets/shaders/Texture.glsl");
+		std::shared_ptr<Engine::Shader> shader = Engine::Shader::Create("assets/shaders/Basic.vert",
+			"assets/shaders/Basic.frag");
 
 		m_Texture = Engine::Texture2D::Create("assets/textures/KMLOGOPresents.png");
 
