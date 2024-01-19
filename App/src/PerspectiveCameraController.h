@@ -16,6 +16,6 @@ private:
 	Engine::PerspectiveCamera m_Camera;
 
 	float m_MoveSpeed = 15.0f;
-	float m_RotationSpeed = 10.0f;
+	float m_RotationSpeed = 30.0f;
 	float m_Yaw = 0.0f, m_Pitch = 0.0f;
 };

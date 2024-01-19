@@ -20,6 +20,8 @@ namespace GLCraft
 		void OnUpdate(Engine::DeltaTime deltaTime) override;
 		void OnEvent(Engine::Event& e) override;
 	private:
+		Engine::ShaderLibrary m_ShaderLibrary;
+
 		//std::unique_ptr<OrthographicCameraController> m_CameraController;
 		std::unique_ptr<PerspectiveCameraController> m_CameraController;
 

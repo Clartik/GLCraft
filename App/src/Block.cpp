@@ -43,42 +43,42 @@ namespace GLCraft
 		m_Vertices[2].Position = {  BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE };
 		m_Vertices[3].Position = { -BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE };
 
-		// Back
-		m_Vertices[4].Position = { -BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
-		m_Vertices[5].Position = {  BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
-		m_Vertices[6].Position = {  BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
-		m_Vertices[7].Position = { -BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
+		// Back (Order Matters for Easy Texture Coords Adding)
+		m_Vertices[5].Position = { -BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
+		m_Vertices[4].Position = {  BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
+		m_Vertices[7].Position = {  BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
+		m_Vertices[6].Position = { -BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
 
 		// Left
-		m_Vertices[8].Position  = m_Vertices[4].Position;
+		m_Vertices[8].Position  = m_Vertices[5].Position;
 		m_Vertices[9].Position  = m_Vertices[0].Position;
 		m_Vertices[10].Position = m_Vertices[3].Position;
-		m_Vertices[11].Position = m_Vertices[7].Position;
+		m_Vertices[11].Position = m_Vertices[6].Position;
 
 		// Right
 		m_Vertices[12].Position = m_Vertices[1].Position;
-		m_Vertices[13].Position = m_Vertices[5].Position;
-		m_Vertices[14].Position = m_Vertices[6].Position;
+		m_Vertices[13].Position = m_Vertices[4].Position;
+		m_Vertices[14].Position = m_Vertices[7].Position;
 		m_Vertices[15].Position = m_Vertices[2].Position;
 
 		// Top
 		m_Vertices[16].Position = m_Vertices[3].Position;
 		m_Vertices[17].Position = m_Vertices[2].Position;
-		m_Vertices[18].Position = m_Vertices[6].Position;
-		m_Vertices[19].Position = m_Vertices[7].Position;
+		m_Vertices[18].Position = m_Vertices[7].Position;
+		m_Vertices[19].Position = m_Vertices[6].Position;
 
 		// Bottom
-		m_Vertices[20].Position = m_Vertices[4].Position;
-		m_Vertices[21].Position = m_Vertices[5].Position;
+		m_Vertices[20].Position = m_Vertices[5].Position;
+		m_Vertices[21].Position = m_Vertices[4].Position;
 		m_Vertices[22].Position = m_Vertices[1].Position;
 		m_Vertices[23].Position = m_Vertices[0].Position;
 
-		for (int i = 0; i < 6; i += 4)
+		for (int i = 0; i < 6 * 4; i += 4)
 		{
-			m_Vertices[i + 1].TexCoord = { 0, 0 };
-			m_Vertices[i + 1].TexCoord = { 0, 0 };
-			m_Vertices[i + 1].TexCoord = { 1, 1 };
-			m_Vertices[i + 1].TexCoord = { 0, 1 };
+			m_Vertices[i + 0].TexCoord = { 0, 0 };
+			m_Vertices[i + 1].TexCoord = { 1, 0 };
+			m_Vertices[i + 2].TexCoord = { 1, 1 };
+			m_Vertices[i + 3].TexCoord = { 0, 1 };
 		}
 
 		for (int i = 0; i < BLOCK_VERTEX_AMOUNT; i++)
@@ -90,8 +90,8 @@ namespace GLCraft
 		};
 
 		m_IndicesMap[BlockFaceType::BACK] = {
-			5, 4, 7,
-			7, 6, 5
+			4, 5, 6,
+			6, 7, 4
 		};
 
 		m_IndicesMap[BlockFaceType::LEFT] = {

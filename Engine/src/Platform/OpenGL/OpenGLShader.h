@@ -10,11 +10,13 @@ namespace Engine
 	{
 	public:
 		OpenGLShader(const std::string& filepath);
-		OpenGLShader(const std::string& vertexPath, const std::string& fragmentPath);
+		OpenGLShader(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath);
 		~OpenGLShader();
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
+
+		inline virtual const std::string& GetName() const override { return m_Name; }
 
 		virtual void SetUniformFloat(const std::string& name, float value) override;
 		virtual void SetUniformInt(const std::string& name, int value) override;
@@ -33,6 +35,7 @@ namespace Engine
 	private:
 		unsigned int m_RendererID;
 
+		std::string m_Name;
 		std::unordered_map<std::string, int> m_UniformLocationCache;
 	};
 }

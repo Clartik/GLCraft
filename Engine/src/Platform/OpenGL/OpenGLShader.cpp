@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <fstream>
+#include <filesystem>
 
 namespace Engine
 {
@@ -24,9 +25,14 @@ namespace Engine
 		std::string source = ReadFile(filepath);
 		auto shaderSources = Preprocess(source);
 		Compile(shaderSources);
+
+		std::filesystem::path path = filepath;
+		m_Name = path.stem().string();			// Returns the file's name stripped of the extension
 	}
 
-	OpenGLShader::OpenGLShader(const std::string& vertexPath, const std::string& fragmentPath)
+	OpenGLShader::OpenGLShader(const std::string& name,
+							   const std::string& vertexPath, const std::string& fragmentPath)
+		: m_Name(name)
 	{
 		std::unordered_map<GLenum, std::string> sources;
 
@@ -104,8 +110,11 @@ namespace Engine
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
 		GLuint program = glCreateProgram();
-		std::vector<GLenum> glShaderIDs(shaderSources.size());
 
+		CORE_ASSERT(shaderSources.size() <= 2, "Only 2 Shaders are Supported Currently!");
+		std::array<GLenum, 2> glShaderIDs;
+
+		int glShaderIDIndex = 0;
 		for (auto& key : shaderSources)
 		{
 			GLenum type = key.first;
@@ -133,11 +142,12 @@ namespace Engine
 
 				CORE_LOG_ERROR("{0}", infoLog.data());
 				CORE_ASSERT(false, "Shader Compilation Failure!");
+
 				break;
 			}
 
 			glAttachShader(program, shader);
-			glShaderIDs.push_back(shader);
+			glShaderIDs[glShaderIDIndex++] = shader;
 		}
 
 		glLinkProgram(program);
