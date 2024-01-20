@@ -6,10 +6,10 @@
 
 namespace GLCraft
 {
-	const unsigned int CHUNK_HEIGHT = 64, CHUNK_ROWS = 16, CHUNK_COLUMNS = 16;
-
 	class Chunk
 	{
+	public:
+		const static unsigned int MAX_HEIGHT = 64, MAX_ROWS = 16, MAX_COLUMNS = 16;
 	public:
 		Chunk(const glm::vec2& startLocation);
 
@@ -19,7 +19,7 @@ namespace GLCraft
 		void AddFaceToMesh(const glm::vec3& location, Engine::Vertex* faceVertices);
 		void CalculateMesh();
 	private:
-		std::array<std::array<std::array<Block, CHUNK_COLUMNS>, CHUNK_ROWS>, CHUNK_HEIGHT> m_Chunk;
+		std::array<std::array<std::array<Block, Chunk::MAX_HEIGHT>, Chunk::MAX_ROWS>, Chunk::MAX_COLUMNS> m_Chunk;
 		Engine::Mesh m_Mesh;
 
 		std::vector<Engine::Vertex> m_Vertices;

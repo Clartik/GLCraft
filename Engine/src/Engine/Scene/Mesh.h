@@ -18,12 +18,6 @@ namespace Engine
 		glm::vec4 Color;
 	};
 
-	struct MeshData
-	{
-		Vertex* Vertices;
-		unsigned int* Indices;
-	};
-
 	class Mesh
 	{
 	public:

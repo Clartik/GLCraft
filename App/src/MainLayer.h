@@ -29,7 +29,9 @@ namespace GLCraft
 		Engine::Mesh m_Square;
 		Engine::Mesh m_Cube;
 
-		std::shared_ptr<Engine::Texture2D> m_Texture;
+		Block m_Block;
+
+		std::shared_ptr<Engine::Texture2D> m_TextureTop, m_TextureSide, m_TextureBottom;
 
 		float m_LastFrameTime = 0;
 		int frameCount = 0;

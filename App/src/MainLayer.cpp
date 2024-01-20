@@ -23,7 +23,7 @@ namespace GLCraft
 	}
 
 	MainLayer::MainLayer()
-		: Layer("Main Layer")
+		: Layer("Main Layer"), m_Block(Engine::Transform({0, 0, 0}), BlockID::GRASS)
 	{
 		Engine::RenderCommand::ShowDepth(true);
 		Engine::RenderCommand::SetCullingMode(Engine::CullingMode::BACK);
@@ -31,13 +31,15 @@ namespace GLCraft
 		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 		auto basicShader = m_ShaderLibrary.Load("Basic", "assets/shaders/Basic.vert", "assets/shaders/Basic.frag");
 
-		m_Texture = Engine::Texture2D::Create("assets/textures/logo.png");
+		m_TextureTop = Engine::Texture2D::Create("assets/textures/Grass Block/Top.png");
+		m_TextureSide = Engine::Texture2D::Create("assets/textures/Grass Block/Side.png");
+		m_TextureBottom = Engine::Texture2D::Create("assets/textures/Grass Block/Dirt.png");
 
 		textureShader->Bind();
 		textureShader->SetUniformInt("u_Texture", 0);
 
-		m_Chunk = new Chunk({ 0, 0 });
-		m_Chunk->GetMesh()->LoadShader(textureShader);
+		/*m_Chunk = new Chunk({ 0, 0 });
+		m_Chunk->GetMesh()->LoadShader(textureShader);*/
 
 		std::vector<Engine::Vertex> verts;
 		std::vector<unsigned int> indices;
@@ -90,17 +92,18 @@ namespace GLCraft
 
 		m_CameraController->OnUpdate(deltaTime);
 
-		m_Texture->Bind(0);
+		//m_TextureTop->Bind(0);
+		//m_TextureSide->Bind(0);
 		Engine::Renderer::BeginScene(m_CameraController->GetCamera());
 
 		//Engine::Renderer::Submit(m_Chunk->GetMesh(), &m_Chunk->GetTransform());
-		/*Engine::Transform transform = Engine::Transform();
-		Engine::Renderer::Submit(&m_Square, &transform);*/
 
-		Engine::Transform transform1 = Engine::Transform({0, 0, 0});
+		/*Engine::Transform transform1 = Engine::Transform({0, 0, 0});
 		Engine::Transform transform2 = Engine::Transform({5, 0, 0});
 		Engine::Renderer::Submit(&m_Square, &transform1);
-		Engine::Renderer::Submit(&m_Cube, &transform2);
+		Engine::Renderer::Submit(&m_Cube, &transform2);*/
+
+		m_Block.Render();
 
 		Engine::Renderer::EndScene();
 

@@ -4,17 +4,17 @@ namespace GLCraft
 {
 	Chunk::Chunk(const glm::vec2& startLocation)
 	{
-		for (int height = 0; height < CHUNK_HEIGHT; height++)
+		for (int height = 0; height < MAX_HEIGHT; height++)
 		{
-			for (int row = 0; row < CHUNK_ROWS; row++)
+			for (int row = 0; row < MAX_ROWS; row++)
 			{
-				for (int column = 0; column < CHUNK_COLUMNS; column++)
+				for (int column = 0; column < MAX_COLUMNS; column++)
 				{
 					Block block(Engine::Transform({ 
 						startLocation.x + row, 
 						height, 
 						startLocation.y + column 
-					}));
+					}), BlockID::GRASS);
 
 					m_Chunk[height][row][column] = block;
 				}
@@ -47,6 +47,7 @@ namespace GLCraft
 
 	void Chunk::CalculateMesh()
 	{
+	#if 0
 		for (int height = 0; height < CHUNK_HEIGHT; height++)
 		{
 			for (int row = 0; row < CHUNK_ROWS; row++)
@@ -102,5 +103,8 @@ namespace GLCraft
 
 		m_Mesh.LoadVertices(m_Vertices.data(), m_Vertices.size() * sizeof(Engine::Vertex));
 		m_Mesh.LoadIndices(m_Indices.data(), m_Indices.size());
+	#else
+
+	#endif
 	}
 }

@@ -3,51 +3,61 @@
 namespace GLCraft
 {
 	Block::Block()
-		: m_Transform(Engine::Transform())
+		: m_Transform(Engine::Transform()), m_ID(BlockID::AIR)
 	{
 		SetVerticesAndIndices();
+		SetTextures();
 	}
 
-	Block::Block(const Engine::Transform& transform)
-		: m_Transform(transform)
+	Block::Block(const Engine::Transform& transform, BlockID blockID)
+		: m_Transform(transform), m_ID(blockID)
 	{
 		SetVerticesAndIndices();
+		SetTextures();
+	}
+
+	void Block::Render()
+	{
+		auto shader = Engine::Shader::Create("assets/shaders/Texture.glsl");
+		shader->SetUniformInt("u_Texture", 0);
+
+		Engine::Vertex* faceVerts = nullptr;
+
+		for (int i = 0; i < 6; i++)
+		{
+			faceVerts = GetFace((BlockFaceType)i);
+
+			Engine::Mesh mesh;
+			mesh.LoadVertices(faceVerts, 4 * sizeof(Engine::Vertex));
+			mesh.LoadIndices(&m_Indices[0], 6);
+			mesh.LoadShader(shader);
+
+			m_Textures[i]->Bind();
+			Engine::Renderer::Submit(&mesh, &m_Transform);
+		}
 	}
 
 	Engine::Vertex* Block::GetFace(BlockFaceType faceType)
 	{
-		Engine::Vertex face[VERTEX_AMOUNT_QUAD];
-		int faceIndex = 0;
-
-		for (int i = 0; i < 3; i++)
-		{
-			// Accesses fourth vertex but sets to third member for index
-			if (i == 0)
-			{
-				faceIndex = m_IndicesMap[faceType][4];
-				face[3] = m_Vertices[faceIndex];
-			}
-
-			faceIndex = m_IndicesMap[faceType][i];
-			face[i] = m_Vertices[faceIndex];
-		}		
-
-		return face;
+		int faceIndex = m_Indices[(int)faceType * 6];
+		return &m_Vertices[faceIndex];
 	}
 
 	void Block::SetVerticesAndIndices()
 	{
+		const float size = 1.0f;
+
 		// Front
-		m_Vertices[0].Position = { -BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE };
-		m_Vertices[1].Position = {  BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE };
-		m_Vertices[2].Position = {  BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE };
-		m_Vertices[3].Position = { -BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE };
+		m_Vertices[0].Position = { -size, -size,  size };
+		m_Vertices[1].Position = {  size, -size,  size };
+		m_Vertices[2].Position = {  size,  size,  size };
+		m_Vertices[3].Position = { -size,  size,  size };
 
 		// Back (Order Matters for Easy Texture Coords Adding)
-		m_Vertices[5].Position = { -BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
-		m_Vertices[4].Position = {  BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
-		m_Vertices[7].Position = {  BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
-		m_Vertices[6].Position = { -BLOCK_VERTEX_SIZE,  BLOCK_VERTEX_SIZE, -BLOCK_VERTEX_SIZE };
+		m_Vertices[5].Position = { -size, -size, -size };
+		m_Vertices[4].Position = {  size, -size, -size };
+		m_Vertices[7].Position = {  size,  size, -size };
+		m_Vertices[6].Position = { -size,  size, -size };
 
 		// Left
 		m_Vertices[8].Position  = m_Vertices[5].Position;
@@ -84,43 +94,32 @@ namespace GLCraft
 		for (int i = 0; i < BLOCK_VERTEX_AMOUNT; i++)
 			m_Vertices[i].Color = { 1, 0, 0, 1 };
 
-		m_IndicesMap[BlockFaceType::FRONT] = {
-			0, 1, 2,
-			2, 3, 0,
-		};
-
-		m_IndicesMap[BlockFaceType::BACK] = {
-			4, 5, 6,
-			6, 7, 4
-		};
-
-		m_IndicesMap[BlockFaceType::LEFT] = {
-			8, 9, 10,
-			10, 11, 8
-		};
-
-		m_IndicesMap[BlockFaceType::RIGHT] = {
-			12, 13, 14,
-			14, 15, 12
-		};
-
-		m_IndicesMap[BlockFaceType::TOP] = {
-			16, 17, 18,
-			18, 19, 16
-		};
-
-		m_IndicesMap[BlockFaceType::BOTTOM] = {
-			20, 21, 22,
-			22, 23, 20
-		};
-
-		int indexCount = 0;
-		for (const auto& pair : m_IndicesMap)
+		int vertexIndex = 0;
+		for (int i = 0; i < INDEX_AMOUNT_CUBE; i += 6)
 		{
-			const auto& faceIndices = pair.second;
+			m_Indices[i + 0] = vertexIndex + 0;
+			m_Indices[i + 1] = vertexIndex + 1;
+			m_Indices[i + 2] = vertexIndex + 2;
+			m_Indices[i + 3] = vertexIndex + 2;
+			m_Indices[i + 4] = vertexIndex + 3;
+			m_Indices[i + 5] = vertexIndex + 0;
 
-			for (int i = 0; i < INDEX_AMOUNT_QUAD; i++)
-				m_Indices[indexCount++] = faceIndices[i];
+			vertexIndex += 4;
 		}
+	}
+
+	void Block::SetTextures()
+	{
+		auto top = Engine::Texture2D::Create("assets/textures/Grass Block/Top.png");
+		auto bottom = Engine::Texture2D::Create("assets/textures/Grass Block/Dirt.png");
+		auto side = Engine::Texture2D::Create("assets/textures/Grass Block/Side.png");
+
+		m_Textures[(int)BlockFaceType::FRONT] = side;
+		m_Textures[(int)BlockFaceType::BACK] = side;
+		m_Textures[(int)BlockFaceType::LEFT] = side;
+		m_Textures[(int)BlockFaceType::RIGHT] = side;
+
+		m_Textures[(int)BlockFaceType::TOP] = top;
+		m_Textures[(int)BlockFaceType::BOTTOM] = bottom;
 	}
 }
