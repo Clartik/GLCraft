@@ -21,19 +21,8 @@ namespace GLCraft
 		void OnEvent(Engine::Event& e) override;
 	private:
 		Engine::ShaderLibrary m_ShaderLibrary;
-
-		//std::unique_ptr<OrthographicCameraController> m_CameraController;
 		std::unique_ptr<PerspectiveCameraController> m_CameraController;
 
 		Chunk* m_Chunk;
-		Engine::Mesh m_Square;
-		Engine::Mesh m_Cube;
-
-		Block m_Block;
-
-		std::shared_ptr<Engine::Texture2D> m_TextureTop, m_TextureSide, m_TextureBottom;
-
-		float m_LastFrameTime = 0;
-		int frameCount = 0;
 	};
 }

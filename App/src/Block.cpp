@@ -2,39 +2,45 @@
 
 namespace GLCraft
 {
-	Block::Block()
-		: m_Transform(Engine::Transform()), m_ID(BlockID::AIR)
+	void Block::SetTexturePaths(BlockID blockID, std::string* texturePaths)
 	{
-		SetVerticesAndIndices();
-		SetTextures();
-	}
+		const std::string defaultTexturePath = "assets/textures/";
 
-	Block::Block(const Engine::Transform& transform, BlockID blockID)
-		: m_Transform(transform), m_ID(blockID)
-	{
-		SetVerticesAndIndices();
-		SetTextures();
-	}
-
-	void Block::Render()
-	{
-		auto shader = Engine::Shader::Create("assets/shaders/Texture.glsl");
-		shader->SetUniformInt("u_Texture", 0);
-
-		Engine::Vertex* faceVerts = nullptr;
-
-		for (int i = 0; i < 6; i++)
+		switch (blockID)
 		{
-			faceVerts = GetFace((BlockFaceType)i);
+			case GLCraft::BlockID::AIR:
+				break;
+			case GLCraft::BlockID::DIRT:
+				break;
+			case GLCraft::BlockID::GRASS:
+			{
+				*(texturePaths + 0) = defaultTexturePath + "Grass Block/Side.png";
+				*(texturePaths + 1) = texturePaths[(int)BlockFaceType::FRONT];
+				*(texturePaths + 2) = texturePaths[(int)BlockFaceType::FRONT];
+				*(texturePaths + 3) = texturePaths[(int)BlockFaceType::FRONT];
 
-			Engine::Mesh mesh;
-			mesh.LoadVertices(faceVerts, 4 * sizeof(Engine::Vertex));
-			mesh.LoadIndices(&m_Indices[0], 6);
-			mesh.LoadShader(shader);
+				*(texturePaths + 4) = defaultTexturePath + "Grass Block/Top.png";
+				*(texturePaths + 5) = defaultTexturePath + "Grass Block/Dirt.png";
 
-			m_Textures[i]->Bind();
-			Engine::Renderer::Submit(&mesh, &m_Transform);
+				break;
+			}
+			case GLCraft::BlockID::STONE:
+				break;
+			default:
+			ASSERT(false, "Invalid Block ID!");
+				break;
 		}
+	}
+
+	Block::Block(BlockID blockID)
+		: m_BlockID(blockID)
+	{
+		SetVerticesAndIndices();
+		SetTextures();
+	}
+
+	Block::~Block()
+	{
 	}
 
 	Engine::Vertex* Block::GetFace(BlockFaceType faceType)
@@ -110,16 +116,13 @@ namespace GLCraft
 
 	void Block::SetTextures()
 	{
-		auto top = Engine::Texture2D::Create("assets/textures/Grass Block/Top.png");
-		auto bottom = Engine::Texture2D::Create("assets/textures/Grass Block/Dirt.png");
-		auto side = Engine::Texture2D::Create("assets/textures/Grass Block/Side.png");
+		std::string texturePaths[6];
+		SetTexturePaths(m_BlockID, texturePaths);
 
-		m_Textures[(int)BlockFaceType::FRONT] = side;
-		m_Textures[(int)BlockFaceType::BACK] = side;
-		m_Textures[(int)BlockFaceType::LEFT] = side;
-		m_Textures[(int)BlockFaceType::RIGHT] = side;
-
-		m_Textures[(int)BlockFaceType::TOP] = top;
-		m_Textures[(int)BlockFaceType::BOTTOM] = bottom;
+		for (int i = 0; i < 6; i++)
+		{
+			if (texturePaths[i].empty()) continue;
+			m_Textures[i] = Engine::Texture2D::Create(texturePaths[i]);
+		}
 	}
 }

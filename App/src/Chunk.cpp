@@ -2,7 +2,8 @@
 
 namespace GLCraft
 {
-	Chunk::Chunk(const glm::vec2& startLocation)
+	Chunk::Chunk(const glm::vec3& startLocation)
+		: m_Transform(startLocation)
 	{
 		for (int height = 0; height < MAX_HEIGHT; height++)
 		{
@@ -10,12 +11,7 @@ namespace GLCraft
 			{
 				for (int column = 0; column < MAX_COLUMNS; column++)
 				{
-					Block block(Engine::Transform({ 
-						startLocation.x + row, 
-						height, 
-						startLocation.y + column 
-					}), BlockID::GRASS);
-
+					Block block(BlockID::GRASS);
 					m_Chunk[height][row][column] = block;
 				}
 			}
@@ -41,18 +37,18 @@ namespace GLCraft
 			vertexIndex + 2,
 			vertexIndex + 2,
 			vertexIndex + 3,
-			vertexIndex 
+			vertexIndex
 		});
 	}
 
+
 	void Chunk::CalculateMesh()
 	{
-	#if 0
-		for (int height = 0; height < CHUNK_HEIGHT; height++)
+		for (int height = 0; height < MAX_HEIGHT; height++)
 		{
-			for (int row = 0; row < CHUNK_ROWS; row++)
+			for (int row = 0; row < MAX_ROWS; row++)
 			{
-				for (int column = 0; column < CHUNK_COLUMNS; column++)
+				for (int column = 0; column < MAX_COLUMNS; column++)
 				{
 					Block& block = m_Chunk[height][row][column];
 
@@ -63,7 +59,7 @@ namespace GLCraft
 						AddFaceToMesh(location, faceVertices);
 					}
 
-					if (row + 1 > CHUNK_ROWS - 1)
+					if (row + 1 > MAX_ROWS - 1)
 					{
 						Engine::Vertex* faceVertices = block.GetFace(BlockFaceType::RIGHT);
 						glm::vec3 location = { row, height, column };
@@ -77,7 +73,7 @@ namespace GLCraft
 						AddFaceToMesh(location, faceVertices);
 					}
 
-					if (column + 1 > CHUNK_COLUMNS - 1)
+					if (column + 1 > MAX_COLUMNS - 1)
 					{
 						Engine::Vertex* faceVertices = block.GetFace(BlockFaceType::FRONT);
 						glm::vec3 location = { row, height, column };
@@ -91,7 +87,7 @@ namespace GLCraft
 						AddFaceToMesh(location, faceVertices);
 					}
 
-					if (height + 1 > CHUNK_HEIGHT - 1)
+					if (height + 1 > MAX_HEIGHT - 1)
 					{
 						Engine::Vertex* faceVertices = block.GetFace(BlockFaceType::TOP);
 						glm::vec3 location = { row, height, column };
@@ -103,8 +99,5 @@ namespace GLCraft
 
 		m_Mesh.LoadVertices(m_Vertices.data(), m_Vertices.size() * sizeof(Engine::Vertex));
 		m_Mesh.LoadIndices(m_Indices.data(), m_Indices.size());
-	#else
-
-	#endif
 	}
 }

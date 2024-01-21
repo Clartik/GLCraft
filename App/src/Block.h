@@ -4,12 +4,12 @@
 
 namespace GLCraft
 {
-	enum class BlockFaceType : int
+	enum class BlockFaceType
 	{
 		FRONT = 0, BACK, LEFT, RIGHT, TOP, BOTTOM
 	};
 
-	enum class BlockID : unsigned int
+	enum class BlockID
 	{
 		AIR = 0,
 		DIRT, GRASS, STONE
@@ -20,18 +20,17 @@ namespace GLCraft
 	class Block
 	{
 	public:
-		Block();
-		Block(const Engine::Transform& transform, BlockID blockID);
-
-		void Render();
+		static void SetTexturePaths(BlockID blockID, std::string* texturePaths);
+	public:
+		Block(BlockID blockID = BlockID::AIR);
+		~Block();
 
 		Engine::Vertex* GetFace(BlockFaceType faceType);
 
 		inline Engine::Vertex* GetVertices() { return m_Vertices.data(); }
 		inline unsigned int* GetIndices() { return m_Indices.data(); }
 
-		inline Engine::Transform& GetTransform() { return m_Transform; }
-		inline BlockID GetBlockID() { return m_ID; }
+		inline BlockID GetBlockID() const { return m_BlockID; }
 	private:
 		void SetVerticesAndIndices();
 		void SetTextures();
@@ -39,8 +38,7 @@ namespace GLCraft
 		std::array<Engine::Vertex, BLOCK_VERTEX_AMOUNT> m_Vertices;
 		std::array<unsigned int, INDEX_AMOUNT_CUBE> m_Indices;
 
-		Engine::Transform m_Transform;
-		BlockID m_ID;
+		BlockID m_BlockID;
 
 		std::array<std::shared_ptr<Engine::Texture2D>, 6> m_Textures;
 	};
