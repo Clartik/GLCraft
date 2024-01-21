@@ -20,7 +20,7 @@ namespace GLCraft
 	class Block
 	{
 	public:
-		static void SetTexturePaths(BlockID blockID, std::string* texturePaths);
+		static const glm::vec2& GetTexCoordsOffset(BlockID blockID, BlockFaceType faceType);
 	public:
 		Block(BlockID blockID = BlockID::AIR);
 		~Block();
@@ -33,13 +33,11 @@ namespace GLCraft
 		inline BlockID GetBlockID() const { return m_BlockID; }
 	private:
 		void SetVerticesAndIndices();
-		void SetTextures();
+		void SetTexCoords();
 	private:
 		std::array<Engine::Vertex, BLOCK_VERTEX_AMOUNT> m_Vertices;
 		std::array<unsigned int, INDEX_AMOUNT_CUBE> m_Indices;
 
 		BlockID m_BlockID;
-
-		std::array<std::shared_ptr<Engine::Texture2D>, 6> m_Textures;
 	};
 }

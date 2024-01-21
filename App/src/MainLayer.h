@@ -23,6 +23,8 @@ namespace GLCraft
 		Engine::ShaderLibrary m_ShaderLibrary;
 		std::unique_ptr<PerspectiveCameraController> m_CameraController;
 
+		std::shared_ptr<Engine::Texture2D> m_TextureAtlas;
+
 		Chunk* m_Chunk;
 	};
 }

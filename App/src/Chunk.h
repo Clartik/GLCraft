@@ -9,7 +9,7 @@ namespace GLCraft
 	class Chunk
 	{
 	public:
-		const static unsigned int MAX_HEIGHT = 64, MAX_ROWS = 16, MAX_COLUMNS = 16;
+		const static unsigned int MAX_HEIGHT = 5, MAX_ROWS = 16, MAX_COLUMNS = 16;
 	public:
 		Chunk(const glm::vec3& startLocation);
 

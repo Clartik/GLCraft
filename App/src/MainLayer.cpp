@@ -4,24 +4,6 @@
 
 namespace GLCraft
 {
-	void AddFace(std::vector<Engine::Vertex>& chunkVertices, std::vector<unsigned int>& chunkIndices,
-		const glm::vec3& location, Engine::Vertex* vertices, int& chunkVertexIndex)
-	{
-		for (int i = 0; i < VERTEX_AMOUNT_QUAD; i++)
-		{
-			vertices[i].Position += location;
-			chunkVertices.push_back(vertices[i]);
-		}
-
-		chunkIndices.push_back(chunkVertexIndex);
-		chunkIndices.push_back(chunkVertexIndex + 1);
-		chunkIndices.push_back(chunkVertexIndex + 2);
-		chunkIndices.push_back(chunkVertexIndex + 2);
-		chunkIndices.push_back(chunkVertexIndex + 3);
-		chunkIndices.push_back(chunkVertexIndex);
-		chunkVertexIndex += VERTEX_AMOUNT_QUAD;
-	}
-
 	MainLayer::MainLayer()
 		: Layer("Main Layer")
 	{
@@ -34,11 +16,10 @@ namespace GLCraft
 		textureShader->Bind();
 		textureShader->SetUniformInt("u_Texture", 0);
 
+		m_TextureAtlas = Engine::Texture2D::Create("assets/textures/Blocks.png");
+
 		m_Chunk = new Chunk({ 0, 0, 0 });
 		m_Chunk->GetMesh()->LoadShader(textureShader);
-
-		std::vector<Engine::Vertex> verts;
-		std::vector<unsigned int> indices;
 
 		const auto& window = Engine::Application::Get().GetWindow();
 		float aspectRatio = (float)window.GetWidth() / (float)window.GetHeight();
@@ -74,6 +55,7 @@ namespace GLCraft
 		
 		Engine::Renderer::BeginScene(m_CameraController->GetCamera());
 
+		m_TextureAtlas->Bind();
 		Engine::Renderer::Submit(m_Chunk->GetMesh(), &m_Chunk->GetTransform());
 
 		Engine::Renderer::EndScene();

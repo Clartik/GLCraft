@@ -2,41 +2,68 @@
 
 namespace GLCraft
 {
-	void Block::SetTexturePaths(BlockID blockID, std::string* texturePaths)
+	const glm::vec2& Block::GetTexCoordsOffset(BlockID blockID, BlockFaceType faceType)
 	{
-		const std::string defaultTexturePath = "assets/textures/";
+		glm::vec2 offset(0.0f);
 
 		switch (blockID)
 		{
 			case GLCraft::BlockID::AIR:
-				break;
+				return offset;
 			case GLCraft::BlockID::DIRT:
-				break;
+			{
+				offset.x = 0;
+				offset.y = 15;
+				return offset;
+			}
 			case GLCraft::BlockID::GRASS:
 			{
-				*(texturePaths + 0) = defaultTexturePath + "Grass Block/Side.png";
-				*(texturePaths + 1) = texturePaths[(int)BlockFaceType::FRONT];
-				*(texturePaths + 2) = texturePaths[(int)BlockFaceType::FRONT];
-				*(texturePaths + 3) = texturePaths[(int)BlockFaceType::FRONT];
+				switch (faceType)
+				{
+					case GLCraft::BlockFaceType::FRONT:
+					case GLCraft::BlockFaceType::BACK:
+					case GLCraft::BlockFaceType::LEFT:
+					case GLCraft::BlockFaceType::RIGHT:
+					{
+						offset.x = 1;
+						offset.y = 15;
+						break;
+					}
+					case GLCraft::BlockFaceType::TOP:
+					{
+						offset.x = 2;
+						offset.y = 15;
+						break;
+					}
+					case GLCraft::BlockFaceType::BOTTOM:
+					{
+						offset.x = 0;
+						offset.y = 15;
+						break;
+					}
+				}
 
-				*(texturePaths + 4) = defaultTexturePath + "Grass Block/Top.png";
-				*(texturePaths + 5) = defaultTexturePath + "Grass Block/Dirt.png";
-
-				break;
+				return offset;
 			}
 			case GLCraft::BlockID::STONE:
-				break;
+			{
+				offset.x = 3;
+				offset.y = 15;
+				return offset;
+			}
 			default:
-			ASSERT(false, "Invalid Block ID!");
 				break;
 		}
+
+		ASSERT(true, "Invalid Block ID!");
+		return offset;
 	}
 
 	Block::Block(BlockID blockID)
 		: m_BlockID(blockID)
 	{
 		SetVerticesAndIndices();
-		SetTextures();
+		SetTexCoords();
 	}
 
 	Block::~Block()
@@ -51,7 +78,7 @@ namespace GLCraft
 
 	void Block::SetVerticesAndIndices()
 	{
-		const float size = 1.0f;
+		const float size = 0.5f;
 
 		// Front
 		m_Vertices[0].Position = { -size, -size,  size };
@@ -89,14 +116,6 @@ namespace GLCraft
 		m_Vertices[22].Position = m_Vertices[1].Position;
 		m_Vertices[23].Position = m_Vertices[0].Position;
 
-		for (int i = 0; i < 6 * 4; i += 4)
-		{
-			m_Vertices[i + 0].TexCoord = { 0, 0 };
-			m_Vertices[i + 1].TexCoord = { 1, 0 };
-			m_Vertices[i + 2].TexCoord = { 1, 1 };
-			m_Vertices[i + 3].TexCoord = { 0, 1 };
-		}
-
 		for (int i = 0; i < BLOCK_VERTEX_AMOUNT; i++)
 			m_Vertices[i].Color = { 1, 0, 0, 1 };
 
@@ -114,15 +133,26 @@ namespace GLCraft
 		}
 	}
 
-	void Block::SetTextures()
+	void Block::SetTexCoords()
 	{
-		std::string texturePaths[6];
-		SetTexturePaths(m_BlockID, texturePaths);
+		const float TEXTURE_ATLAS_WIDTH = 256, TEXTURE_ATLAS_HEIGHT = 256;
+		const float SPRITE_WIDTH = 16, SPRITE_HEIGHT = 16;
 
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 6 * 4; i += 4)
 		{
-			if (texturePaths[i].empty()) continue;
-			m_Textures[i] = Engine::Texture2D::Create(texturePaths[i]);
+			const glm::vec2& offset = GetTexCoordsOffset(m_BlockID, (BlockFaceType)(i / 4));
+
+			m_Vertices[i + 0].TexCoord.x = (SPRITE_WIDTH * offset.x) / TEXTURE_ATLAS_WIDTH;
+			m_Vertices[i + 0].TexCoord.y = (SPRITE_HEIGHT * offset.y) / TEXTURE_ATLAS_HEIGHT;
+
+			m_Vertices[i + 1].TexCoord.x = (SPRITE_WIDTH * (offset.x + 1)) / TEXTURE_ATLAS_WIDTH;
+			m_Vertices[i + 1].TexCoord.y = (SPRITE_HEIGHT * offset.y) / TEXTURE_ATLAS_HEIGHT;
+
+			m_Vertices[i + 2].TexCoord.x = (SPRITE_WIDTH * (offset.x + 1)) / TEXTURE_ATLAS_WIDTH;
+			m_Vertices[i + 2].TexCoord.y = (SPRITE_HEIGHT * (offset.y + 1)) / TEXTURE_ATLAS_HEIGHT;
+
+			m_Vertices[i + 3].TexCoord.x = (SPRITE_WIDTH * offset.x) / TEXTURE_ATLAS_WIDTH;
+			m_Vertices[i + 3].TexCoord.y = (SPRITE_HEIGHT * (offset.y + 1)) / TEXTURE_ATLAS_HEIGHT;
 		}
 	}
 }
